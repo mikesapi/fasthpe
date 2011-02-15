@@ -1,0 +1,12 @@
+IplImage* draw_and_calculate( IplImage* img );
+float	FindDistance	(CvPoint pt1, CvPoint pt2);
+float	FindAngle		(CvPoint pt1, CvPoint pt2);
+float	Find_slant		(int ln, int lf, float Rn, float tita);
+void 	draw_crosshair(IplImage* img, CvPoint centre, int circle_radius, int line_radius, CvScalar colour);
+void 	play_game(IplImage* img, int precision, CvPoint Position, CvScalar ball_colour);
+void 	draw_pin(IplImage* img, CvPoint3D32f normal, float slant, float tita, CvScalar colour);
+void    init_geometric_model(void);
+void    init_kalman_filter(void);
+void 	print_text(IplImage* img, int counter, CvScalar colour);
+void 	draw_trail(IplImage* img, CvPoint* pt);
+void 	closeDraw();
