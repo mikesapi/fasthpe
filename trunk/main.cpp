@@ -8,8 +8,8 @@
 #include "draw_and_calculate.h"
 
 //camera resolution
-extern int W;
-extern int H;
+extern int W; //width
+extern int H; //height
 
 extern CvPoint Face_center;
 extern CvPoint LeftEye_center;
