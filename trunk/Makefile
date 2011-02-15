@@ -13,7 +13,7 @@ LDFLAGS = -L/usr/local/lib -lopencv_core -lopencv_imgproc -lopencv_calib3d -lope
 #-L../../lib -lflycapture${D}
 #-ldc1394 -lraw1394
 
-SOURCES = Face_Detect_Track.cpp draw_and_calculate.cpp Template_match.cpp capture.cpp Feature_detect.cpp
+SOURCES = main.cpp draw_and_calculate.cpp Template_match.cpp capture.cpp Feature_detect.cpp
 OBJECTS = $(SOURCES:.c=.o)
 TARGET = Head_Pose_Estimation
 
