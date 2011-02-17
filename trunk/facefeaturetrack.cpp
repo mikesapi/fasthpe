@@ -1,9 +1,10 @@
-
 #include <stdio.h>
-#include "opencv/cv.h"
-#include "opencv/highgui.h"
-#include "Template_match.h"
-#include "draw_and_calculate.h"
+
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc_c.h>
+
+#include "facefeaturetrack.h"
+#include "pose-estimation.h"
 
 //camera resolution
 extern int W;

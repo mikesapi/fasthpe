@@ -1,12 +1,17 @@
-#include "opencv/cv.h"
 #include <stdio.h>
-#include "draw_and_calculate.h"
-#include "Template_match.h"
- 
-
 #include <time.h>
 #include <stdlib.h>
 #include <iostream>
+
+#include <opencv2/video/tracking.hpp>
+#include <opencv2/legacy/compat.hpp>
+#include <opencv2/imgproc/imgproc_c.h>
+
+#include "facefeaturetrack.h"
+#include "pose-estimation.h"
+ 
+
+
 //#include <qsound.h>
 using namespace std;
 

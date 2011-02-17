@@ -1,13 +1,14 @@
 #include <stdio.h>
-#include "opencv/cv.h"
-#include "opencv/highgui.h"
-#include "capture.h"
 
+#include <opencv2/highgui/highgui.hpp>
+
+#include "capture.h"
+//#include "flycapture/FlyCapture2.h"
 int frames;
 
-//image resolution
-int W = 320;
-int H = 240;
+//resolution
+int W = 320; //width
+int H = 240; //height
 
 CvCapture *capture = 0; // Structure for getting video from camera or avi
 int frame_number = 1;
@@ -54,12 +55,19 @@ int frame_number = 1;
 // Initialize capture from camera
 int initCapture()
 {
+  //IEEE1394 camera index is 300.
 	// Initialize video capture
 	capture = cvCaptureFromCAM( CV_CAP_ANY );
-
-	cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_WIDTH, W );
-	cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_HEIGHT, H );
-	
+	//capture = cvCreateCameraCapture(1);
+	//capture = cvCaptureFromCAM( 1 );
+	//capture = cvCaptureFromCAM(-1);
+	//cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_WIDTH, W );
+	//cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_HEIGHT, H );
+	if(capture){
+	  //printf("arrived here!");
+	  cvSetCaptureProperty(capture, CV_CAP_PROP_FPS, 30.0);
+	  
+	}
 	if( !capture )
 	{
 		fprintf(stderr, "failed to initialize camera capture\n");
@@ -69,6 +77,9 @@ int initCapture()
 	return 1;
 }
 
+
+
+// closeCapture()
 void closeCapture()
 {
 	// Terminate video capture and free capture resources
@@ -84,14 +95,19 @@ IplImage * nextFrame()
 {
 	IplImage * frame = cvQueryFrame( capture );
 
+	
+	// Check the origin of image. If top left, copy the image frame to frame_copy. 
+            
+
+
 	if( !frame ){
 		fprintf(stderr, "failed to get a video frame\n");
-		//frame_number = frame_number -1;
+		frame_number = frame_number -1;
 
 		return NULL;
 	}
 
-	//frame_number++;
+   // frame_number++;
 	//printf("frame_number = %d", frame_number);   
 
 	/*if(frame_number == 2 ){
@@ -115,14 +131,13 @@ IplImage * nextFrame()
 	return frame;
 }
 
-/*
 void printResults(float roll[], float yaw[], float pitch[])
    {
       FILE *fp;
       int i;
    
-      //open the file 
-      //fp = fopen("C:/Documents and Settings/mikesapi/Desktop/Thesis Material/Ground Truth/ssm/my_ssm7.txt", "w");
+      /* open the file */
+	  //fp = fopen("C:/Documents and Settings/mikesapi/Desktop/Thesis Material/Ground Truth/ssm/my_ssm7.txt", "w");
       //fp = fopen("C:/Documents and Settings/mikesapi/Desktop/Thesis Material/Ground Truth/jam/my_jam4.txt", "w");
 		//fp = fopen("C:/Documents and Settings/mikesapi/Desktop/Thesis Material/Screenshots/me3.txt", "w");
 	  
@@ -131,17 +146,17 @@ void printResults(float roll[], float yaw[], float pitch[])
          exit(0);
       }
    
-      //write to the file
+      /* write to the file */
       for (i=1; i<=frames+1; ++i)
 		 
          fprintf(fp, "%d,		%0.6f,		%0.6f,			%0.6f\n", i, roll[i], yaw[i], pitch[i]);
    
-      //close the file
+      /* close the file */
       fclose(fp);
    
       return;
    }
-*/
+
 
 
 /*void writeVideo( IplImage* frame)

@@ -1,10 +1,11 @@
+#include <iostream>
+#include <stdio.h>
 
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc_c.h>
+#include <opencv2/objdetect/objdetect.hpp>
 
-#include <opencv/cv.h>
-#include <opencv/highgui.h>
-#include <opencv/cvaux.h>
-#include "Feature_detect.h"
-
+#include "facefeaturedetect.h"
 
 static CvHaarClassifierCascade* faceCascade = 0;			// Create a new Face Haar classifier
 static CvHaarClassifierCascade* noseCascade = 0;			// Create a new Nose Haar classifier

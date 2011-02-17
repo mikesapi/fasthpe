@@ -1,11 +1,14 @@
-#include "opencv/highgui.h"
-#include "opencv/cv.h"
+#include <iostream>
 #include <stdio.h>
 
+//compatible with opencv2.2
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc_c.h>
+
 #include "capture.h"
-#include "Feature_detect.h"
-#include "Template_match.h"
-#include "draw_and_calculate.h"
+#include "facefeaturedetect.h"
+#include "facefeaturetrack.h"
+#include "pose-estimation.h"
 
 //camera resolution
 extern int W; //width
