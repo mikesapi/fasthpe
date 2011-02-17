@@ -24,10 +24,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "facefeaturedetect.h"
 
-static CvHaarClassifierCascade* faceCascade = 0;			// Create a new Face Haar classifier
-static CvHaarClassifierCascade* noseCascade = 0;			// Create a new Nose Haar classifier
-static CvHaarClassifierCascade* eyesCascade = 0;			// Create a new Eyes Haar classifier
-static CvHaarClassifierCascade* mouthCascade = 0;			// Create a new Mouth Haar classifier
+static CvHaarClassifierCascade* faceCascade = 0;		// Create a new Face Haar classifier
+static CvHaarClassifierCascade* noseCascade = 0;		// Create a new Nose Haar classifier
+static CvHaarClassifierCascade* eyesCascade = 0;		// Create a new Eyes Haar classifier
+static CvHaarClassifierCascade* mouthCascade = 0;		// Create a new Mouth Haar classifier
 
 static CvMemStorage* storage = cvCreateMemStorage(0);		// memory for detector to use
 

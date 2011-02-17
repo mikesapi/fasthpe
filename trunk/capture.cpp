@@ -80,11 +80,8 @@ int initCapture()
 	//capture = cvCaptureFromCAM(-1);
 	//cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_WIDTH, W );
 	//cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_HEIGHT, H );
-	if(capture){
-	  //printf("arrived here!");
-	  cvSetCaptureProperty(capture, CV_CAP_PROP_FPS, 30.0);
-	  
-	}
+	//cvSetCaptureProperty(capture, CV_CAP_PROP_FPS, 30.0);
+
 	if( !capture )
 	{
 		fprintf(stderr, "failed to initialize camera capture\n");

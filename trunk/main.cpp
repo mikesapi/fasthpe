@@ -175,27 +175,26 @@ int initAll()
 
 	if( !initFaceDet(	
 						
-						"haarcascades/haarcascade_frontalface_alt2.xml",
-						"haarcascades/Nariz_nuevo_20stages.xml",
-						//"haarcascades/haarcascade_eye_tree_eyeglasses.xml",
-						"haarcascades/haarcascade_eye.xml",
-						"haarcascades/mouth.xml"))
-	
-
-		return 0;
+	"haarcascades/haarcascade_frontalface_alt2.xml",
+	"haarcascades/Nariz_nuevo_20stages.xml",
+	//"haarcascades/haarcascade_eye_tree_eyeglasses.xml",
+	"haarcascades/haarcascade_eye.xml",
+	"haarcascades/mouth.xml"))
+	  
+	return 0;
 
 	// Startup message tells user how to begin and how to exit
 	printf( "\n*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n"
-			"To begin, look at the camera and press 'Enter'\n\n"
-			"To manually reinitialise the system press 'r'\n\n"
-	        "To exit, click inside the video display,\n"
-	        "then press the ESC key\n\n\n"
-			"To play the game, hit the blue circles that\n" 
-			"appear on the screen with the green circle\n"
-			"that you can control with your head pose\n\n\n"
-			"***WARNING***\n"
-			"--Prolonged use of this product may cause neck injuries--"
-			"\n*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
+		"To begin, look at the camera and press 'Enter'\n\n"
+		"To manually reinitialise the system press 'r'\n\n"
+		"To exit, click inside the video display,\n"
+		"then press the ESC key\n\n\n"
+		"To play the game, hit the blue circles that\n" 
+		"appear on the screen with the green circle\n"
+		"that you can control with your head pose\n\n\n"
+		"***WARNING***\n"
+		"--Prolonged use of this product may cause neck injuries--"
+		"\n*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
 	fgetc(stdin);
 
 	// Create the display window
@@ -227,7 +226,6 @@ void exitProgram(int code)
 }
 
 //get frame from camera
-
 void captureVideoFrame()
 {
 	// Capture the next frame
@@ -256,6 +254,7 @@ void captureVideoFrame()
 	//equalize(FrameCopy);
 }
 
+/*
 void equalize(IplImage* frame)
 {
 IplImage* blue=cvCreateImage( cvGetSize(frame), 8, 1 );
@@ -285,5 +284,5 @@ cvReleaseImage( &red );
 cvReleaseImage( &blue_e );
 cvReleaseImage( &green_e );
 cvReleaseImage( &red_e );
-
 }
+*/
