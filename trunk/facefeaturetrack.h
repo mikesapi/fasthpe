@@ -19,10 +19,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define FACE_FEATURE_TRACK_H
 
 void closeTemplateMatch();
-//int initTracker(IplImage* frame, CvPoint L, CvPoint R, CvPoint N, CvPoint M );
-int initTracker2(IplImage* frame, Face* F );
+int initTracker(IplImage* frame, Face* F );
 //int dynamicTracker(IplImage* frame, CvPoint L, CvPoint R, CvPoint N, CvPoint M );
-IplImage* trackObject( IplImage* frame );
-IplImage* trackObject2( IplImage* frame, Face* F);
+IplImage* trackObject( IplImage* frame, Face* F, FaceGeom* G);
 
 #endif

@@ -26,6 +26,10 @@ struct facefeatures{
  CvPoint2D32f	RightEye;
  CvPoint2D32f	Nose;
  CvPoint2D32f 	Mouth;
+ 
+ CvPoint2D32f	NoseBase;
+ CvPoint2D32f 	MidEyes;
+ 
   
 };
 typedef struct facefeatures Face;

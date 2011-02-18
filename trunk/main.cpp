@@ -24,23 +24,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "capture.h"
 #include "facefeaturedetect.h"
-#include "facefeaturetrack.h"
 #include "pose-estimation.h"
+#include "facefeaturetrack.h"
 
 
 
 Face F;
 Face* FPtr = &F;
 
+FaceGeom G;
+FaceGeom* GPtr = &G;
+
 //camera resolution
 extern int W; //width
 extern int H; //height
-
-// extern CvPoint Face_center;
-// extern CvPoint LeftEye_center;
-// extern CvPoint RightEye_center;
-// extern CvPoint Nose_center;
-// extern CvPoint Mouth_center;
 
 extern int is_tracking;
 
@@ -55,10 +52,7 @@ const char * DISPLAY_WINDOW = "DisplayWindow";
 IplImage  * FrameCopy = 0;
 IplImage  * DisplayFrame = 0;
 
-
-
 extern CvRect* r;
-
 
 int initAll();
 void exitProgram(int code);
@@ -66,6 +60,19 @@ void captureVideoFrame();
 void equalize(IplImage* frame);
 
 int key;
+bool isFace = 0;
+
+bool CheckForFace(Face* F){
+  
+	return	(F->LeftEye.x > 0. && F->RightEye.x > 0. && F->Nose.x > 0. && F->Mouth.x > 0.
+		&& (F->RightEye.x - F->LeftEye.x) > (r->width)/4.
+		&& ((F->RightEye.x + F->LeftEye.x + F->Nose.x)/3.) > F->Nose.x -5.
+		&& ((F->RightEye.y + F->LeftEye.y + F->Nose.y)/3.) > F->Nose.y -20.
+		&& ((F->RightEye.x + F->LeftEye.x + F->Nose.x)/3.) < F->Nose.x +5.
+		&& ((F->RightEye.y + F->LeftEye.y + F->Nose.y)/3.) < F->Nose.y +10.
+	);
+  
+}
 
 // Main Program
 //void main( int argc, char** argv )
@@ -90,10 +97,10 @@ int main(int argc, char** argv)
 			t = (double)cvGetTickCount() - t;//end timer
 			//printf( "detection time = %gms\n", t/((double)cvGetTickFrequency()*1000.) );//display timem in ms
 
-			//printf( "Left Eye x=%d y=%d\n", LeftEye_center.x, LeftEye_center.y) ;
-			//printf( "Right Eye x=%d y=%d\n", RightEye_center.x, RightEye_center.y) ;
-			//printf( "Nose x=%d y=%d\n", Nose_center.x, Nose_center.y) ;
-			//printf( "Mouth x=%d y=%d\n\n\n", Mouth_center.x, Mouth_center.y) ;
+			//printf( "Left Eye x=%d y=%d\n", F.LeftEye.x, F.LeftEye.y) ;
+			//printf( "Right Eye x=%d y=%d\n", F.RightEye.x, F.RightEye.y) ;
+			//printf( "Nose x=%d y=%d\n", F.Nose.x, F.Nose.y) ;
+			//printf( "Mouth x=%d y=%d\n\n\n", F.Nose.x, F.Nose.y) ;
 
 			cvShowImage(DISPLAY_WINDOW, DisplayFrame );//show result
 
@@ -101,25 +108,21 @@ int main(int argc, char** argv)
 			if(key == 1048689 || key == 1048603 || key == 'q' )  exitProgram(0);//if user presses Esc or q , exit program
 		}
 		// exit loop when a face is detected
-		if(F.LeftEye.x > 0. && F.RightEye.x > 0. && F.Nose.x > 0. && F.Mouth.x > 0.
-// 			&& (RightEye_center.x - LeftEye_center.x) > (r->width)/4
-// 			&& ((RightEye_center.x + LeftEye_center.x + Mouth_center.x)/3) > Nose_center.x -5
-// 			&& ((RightEye_center.y + LeftEye_center.y + Mouth_center.y)/3) > Nose_center.y -20
-// 			&& ((RightEye_center.x + LeftEye_center.x + Mouth_center.x)/3) < Nose_center.x +5
-// 			&& ((RightEye_center.y + LeftEye_center.y + Mouth_center.y)/3) < Nose_center.y +10
-			) 
-			break;
+		
+		isFace = CheckForFace(FPtr);
+		
+		if(isFace)	break;
 	}
 
 	
 	//captureVideoFrame();//get frame from camera
 
 	// initialize tracking (NOTE:try make it work with grayscale instead of colour)
-	//is_tracking	= initTracker(FrameCopy, LeftEye_center, RightEye_center, Nose_center, Mouth_center);
-	is_tracking	= initTracker2(FrameCopy, FPtr);
-	//is_tracking	= dynamicTracker(FrameCopy, LeftEye_center, RightEye_center, Nose_center, Mouth_center);
+	is_tracking	= initTracker(FrameCopy, FPtr);
+	//is_tracking	= dynamicTracker(FrameCopy, F->LeftEye, F->RightEye, F->Nose, F->Nose);
 	i=0;
-	init_geometric_model2(FPtr);
+	//init_geometric_model(FPtr);
+	init_geometric_model(FPtr,GPtr);
 	init_kalman_filter();
 
 	while(1)
@@ -130,24 +133,22 @@ int main(int argc, char** argv)
 		{
 			//dymanic updating suffers from drift over time in its current state
 			/*i++;
-		
 			if (i == 8){
-				//is_tracking	= dynamicTracker(FrameCopy, LeftEye_center, RightEye_center, Nose_center, Mouth_center);
-				is_tracking	= initTracker(FrameCopy, LeftEye_center, RightEye_center, Nose_center, Mouth_center);
+				//is_tracking	= dynamicTracker(FrameCopy, F->LeftEye, F->RightEye, F->Nose, F->Nose);
+				is_tracking	= initTracker(FrameCopy, F->LeftEye, F->RightEye, F->Nose, F->Nose);
 				i=0;
 			}*/
 
 		double t = (double)cvGetTickCount();//start timer
 
-		//FrameCopy = trackObject(FrameCopy);
-		FrameCopy = trackObject2(FrameCopy, FPtr);
+		FrameCopy = trackObject(FrameCopy, FPtr, GPtr);
 
-		FrameCopy = draw_and_calculate(FrameCopy, FPtr);
+		FrameCopy = draw_and_calculate(FrameCopy, FPtr, GPtr);
 
-		//printf( "Left Eye	x=%d y=%d\n",		LeftEye_center.x, LeftEye_center.y) ;
-		//printf( "Right Eye	x=%d y=%d\n",		RightEye_center.x, RightEye_center.y) ;
-		//printf( "Nose		x=%d y=%d\n",		Nose_center.x, Nose_center.y) ;
-		//printf( "Mouth		x=%d y=%d\n\n",		Mouth_center.x, Mouth_center.y) ;
+		//printf( "Left Eye	x=%d y=%d\n",		F.LeftEye.x, F.LeftEye.y) ;
+		//printf( "Right Eye	x=%d y=%d\n",		F.RightEye.x, F.RightEye.y) ;
+		//printf( "Nose		x=%d y=%d\n",		F.Nose.x, F.Nose.y) ;
+		//printf( "Mouth	x=%d y=%d\n\n",		F.Nose.x, F.Nose.y) ;
 
 		t = (double)cvGetTickCount() - t;//end timer
 		printf( "detection time = %gms\n\n", t/((double)cvGetTickFrequency()*1000.) );//display timem in ms
