@@ -27,15 +27,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "facefeaturetrack.h"
 #include "pose-estimation.h"
 
+
+
+Face F;
+Face* FPtr = &F;
+
 //camera resolution
 extern int W; //width
 extern int H; //height
 
-extern CvPoint Face_center;
-extern CvPoint LeftEye_center;
-extern CvPoint RightEye_center;
-extern CvPoint Nose_center;
-extern CvPoint Mouth_center;
+// extern CvPoint Face_center;
+// extern CvPoint LeftEye_center;
+// extern CvPoint RightEye_center;
+// extern CvPoint Nose_center;
+// extern CvPoint Mouth_center;
 
 extern int is_tracking;
 
@@ -79,7 +84,8 @@ int main(int argc, char** argv)
 
 			double t = (double)cvGetTickCount();//start timer
 			
-			DisplayFrame = detect_features(DisplayFrame);//detect face and facial features
+			//DisplayFrame = detect_features(DisplayFrame);//detect face and facial features
+			DisplayFrame = detect_features2(DisplayFrame, FPtr);//detect face and facial features
 
 			t = (double)cvGetTickCount() - t;//end timer
 			//printf( "detection time = %gms\n", t/((double)cvGetTickFrequency()*1000.) );//display timem in ms
@@ -95,12 +101,12 @@ int main(int argc, char** argv)
 			if(key == 1048689 || key == 1048603 || key == 'q' )  exitProgram(0);//if user presses Esc or q , exit program
 		}
 		// exit loop when a face is detected
-		if(LeftEye_center.x > 0 && RightEye_center.x > 0 && Nose_center.x > 0 && Mouth_center.x > 0
-			&& (RightEye_center.x - LeftEye_center.x) > (r->width)/4
-			&& ((RightEye_center.x + LeftEye_center.x + Mouth_center.x)/3) > Nose_center.x -5
-			&& ((RightEye_center.y + LeftEye_center.y + Mouth_center.y)/3) > Nose_center.y -20
-			&& ((RightEye_center.x + LeftEye_center.x + Mouth_center.x)/3) < Nose_center.x +5
-			&& ((RightEye_center.y + LeftEye_center.y + Mouth_center.y)/3) < Nose_center.y +10
+		if(F.LeftEye.x > 0. && F.RightEye.x > 0. && F.Nose.x > 0. && F.Mouth.x > 0.
+// 			&& (RightEye_center.x - LeftEye_center.x) > (r->width)/4
+// 			&& ((RightEye_center.x + LeftEye_center.x + Mouth_center.x)/3) > Nose_center.x -5
+// 			&& ((RightEye_center.y + LeftEye_center.y + Mouth_center.y)/3) > Nose_center.y -20
+// 			&& ((RightEye_center.x + LeftEye_center.x + Mouth_center.x)/3) < Nose_center.x +5
+// 			&& ((RightEye_center.y + LeftEye_center.y + Mouth_center.y)/3) < Nose_center.y +10
 			) 
 			break;
 	}
@@ -109,10 +115,11 @@ int main(int argc, char** argv)
 	//captureVideoFrame();//get frame from camera
 
 	// initialize tracking (NOTE:try make it work with grayscale instead of colour)
-	is_tracking	= initTracker(FrameCopy, LeftEye_center, RightEye_center, Nose_center, Mouth_center);
+	//is_tracking	= initTracker(FrameCopy, LeftEye_center, RightEye_center, Nose_center, Mouth_center);
+	is_tracking	= initTracker2(FrameCopy, FPtr);
 	//is_tracking	= dynamicTracker(FrameCopy, LeftEye_center, RightEye_center, Nose_center, Mouth_center);
 	i=0;
-	init_geometric_model();
+	init_geometric_model2(FPtr);
 	init_kalman_filter();
 
 	while(1)
@@ -132,9 +139,10 @@ int main(int argc, char** argv)
 
 		double t = (double)cvGetTickCount();//start timer
 
-		FrameCopy = trackObject(FrameCopy);
+		//FrameCopy = trackObject(FrameCopy);
+		FrameCopy = trackObject2(FrameCopy, FPtr);
 
-		FrameCopy = draw_and_calculate(FrameCopy);
+		FrameCopy = draw_and_calculate(FrameCopy, FPtr);
 
 		//printf( "Left Eye	x=%d y=%d\n",		LeftEye_center.x, LeftEye_center.y) ;
 		//printf( "Right Eye	x=%d y=%d\n",		RightEye_center.x, RightEye_center.y) ;

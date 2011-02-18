@@ -24,6 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <opencv2/legacy/compat.hpp>
 #include <opencv2/imgproc/imgproc_c.h>
 
+#include "facefeaturedetect.h"
 #include "facefeaturetrack.h"
 #include "pose-estimation.h"
  
@@ -46,11 +47,11 @@ SetConsoleCursorPosition( hStdout, position );
 }*/
 
 //global variables - coordinates of features
-extern CvPoint Face_center;
-extern CvPoint LeftEye_center;
-extern CvPoint RightEye_center;
-extern CvPoint Nose_center;
-extern CvPoint Mouth_center;
+// extern CvPoint Face_center;
+// extern CvPoint LeftEye_center;
+// extern CvPoint RightEye_center;
+// extern CvPoint Nose_center;
+// extern CvPoint Mouth_center;
 extern CvPoint LeftEye_center_corner;
 
 extern CvPoint LeftEye_center_corner;
@@ -67,8 +68,8 @@ extern int frame_number;
 //
 extern int is_tracking;
 
-CvPoint Eye_center;
-CvPoint Nose_base;
+CvPoint2D32f Eye_center;
+CvPoint2D32f Nose_base;
 
 CvMemStorage* storage = cvCreateMemStorage(0);
 CvSeq* seq = cvCreateSeq(CV_SEQ_FLAG_CLOSED | CV_SEQ_KIND_CURVE | CV_SEQ_ELTYPE_POINT, sizeof(CvSeq), sizeof(CvPoint), storage); 
@@ -192,12 +193,12 @@ cvZero( z_k );
 	cvRand( &rng, kalman->state_post ); // Choose random initial state
 }
 
-void init_geometric_model(void)
+void init_geometric_model2(Face* F)
 {
-	init_LeftEye_Nose_distance = FindDistance(Nose_center, LeftEye_center);			//initial distance between Nose center and left Eye
-	init_RightEye_Nose_distance = FindDistance(Nose_center, RightEye_center);		//initial distance between Nose center and right Eye
-	init_LeftEye_RightEye_distance = FindDistance(LeftEye_center, RightEye_center);	//initial distance between left Eye and right Eye
-	init_Nose_Mouth_distance = FindDistance(Nose_center, Mouth_center);				//initial distance between Nose center and Mouth
+	init_LeftEye_Nose_distance = FindDistance2D32f(F->Nose, F->LeftEye);			//initial distance between Nose center and left Eye
+	init_RightEye_Nose_distance = FindDistance2D32f(F->Nose, F->RightEye);		//initial distance between Nose center and right Eye
+	init_LeftEye_RightEye_distance = FindDistance2D32f(F->LeftEye, F->RightEye);	//initial distance between left Eye and right Eye
+	init_Nose_Mouth_distance = FindDistance2D32f(F->Nose, F->Mouth);				//initial distance between Nose center and Mouth
 
 	init_Mean_Feature_distance = cvRound((init_LeftEye_Nose_distance + init_RightEye_Nose_distance + init_LeftEye_RightEye_distance + init_Nose_Mouth_distance)/4);
 	rand_coord.x = W/2;
@@ -211,47 +212,47 @@ void init_geometric_model(void)
 }
 
 //Function to calculate head pose and draw lines connecting features
-IplImage* draw_and_calculate( IplImage* img ){
+IplImage* draw_and_calculate( IplImage* img, Face* F ){
 
 	//Find center point between the eyes
-	Eye_center.x = cvRound((LeftEye_center.x + RightEye_center.x)/2);
-	Eye_center.y = cvRound((LeftEye_center.y + RightEye_center.y)/2);
+	Eye_center.x = (F->LeftEye.x + F->RightEye.x)/2;
+	Eye_center.y = (F->LeftEye.y + F->RightEye.y)/2;
 
 	//Find center point between the eyes
-	//Eye_center.x = cvRound((LeftEye_center_corner.x + RightEye_center_corner.x)/2);
-	//Eye_center.y = cvRound((LeftEye_center_corner.y + RightEye_center_corner.y)/2);
+	//Eye_center.x = cvRound((F->LeftEye_corner.x + F->RightEye_corner.x)/2);
+	//Eye_center.y = cvRound((F->LeftEye_corner.y + F->RightEye_corner.y)/2);
 
 	//Find the nose base along the symmetry axis
-	Nose_base.x = cvRound(Mouth_center.x + (Eye_center.x - Mouth_center.x)*(R_m));
-	Nose_base.y = cvRound(Mouth_center.y - (Mouth_center.y - Eye_center.y)*(R_m));
+	Nose_base.x = F->Mouth.x + (Eye_center.x - F->Mouth.x)*(R_m);
+	Nose_base.y = F->Mouth.y - (F->Mouth.y - Eye_center.y)*(R_m);
 	
 
-	 LeftEye_Nose_distance = FindDistance(Nose_center, LeftEye_center);			//distance between Nose center and left Eye
-	 RightEye_Nose_distance = FindDistance(Nose_center, RightEye_center);		//distance between Nose center and right Eye
-	 LeftEye_RightEye_distance = FindDistance(LeftEye_center, RightEye_center);	//distance between left Eye and right Eye
-	 Nose_Mouth_distance = FindDistance(Nose_center, Mouth_center);				//distance between Nose center and Mouth
+	LeftEye_Nose_distance 	= FindDistance2D32f(F->Nose, F->LeftEye);			//distance between Nose center and left Eye
+	RightEye_Nose_distance 	= FindDistance2D32f(F->Nose, F->RightEye);		//distance between Nose center and right Eye
+	LeftEye_RightEye_distance = FindDistance2D32f(F->LeftEye, F->RightEye);	//distance between left Eye and right Eye
+	Nose_Mouth_distance 	= FindDistance2D32f(F->Nose, F->Mouth);				//distance between Nose center and Mouth
 
 	int Mean_Feature_distance = cvRound((LeftEye_Nose_distance + RightEye_Nose_distance + LeftEye_RightEye_distance + Nose_Mouth_distance)/4);
 
 	scale = (float)Mean_Feature_distance/ (float)init_Mean_Feature_distance;
 
-	float Image_Facial_Normal_length = FindDistance(Nose_base, Nose_center);			//distance between Nose base and Nose center
-	float Eye_Mouth_distance = FindDistance(Eye_center, Mouth_center);				//distance between Eye center and Mouth center
+	float Image_Facial_Normal_length = FindDistance2D32f(Nose_base, F->Nose);			//distance between Nose base and Nose center
+	float Eye_Mouth_distance = FindDistance2D32f(Eye_center, F->Mouth);				//distance between Eye center and Mouth center
 
-	/*Roll = FindAngle(LeftEye_center, RightEye_center);						//roll angle - angle between left Eye and right Eye
+	/*Roll = FindAngle(F->LeftEye, F->RightEye);						//roll angle - angle between left Eye and right Eye
 	if (Roll > 180){
 		Roll = Roll-360;
 	}
 	roll[frame_number] = Roll;*/
 
-	Roll = FindAngle(LeftEye_center, RightEye_center);						//roll angle - angle between left Eye and right Eye
+	Roll = FindAngle(F->LeftEye, F->RightEye);						//roll angle - angle between left Eye and right Eye
 	if (Roll > 180){
 		Roll = Roll-360;
 	}
 	roll[frame_number] = Roll;
 
 	float symm = FindAngle(Nose_base, Eye_center);									//symm angle - angle between the symmetry axis and the 'x' axis 
-	float tilt = FindAngle(Nose_base, Nose_center);									//tilt angle - angle between normal in image and 'x' axis
+	float tilt = FindAngle(Nose_base, F->Nose);									//tilt angle - angle between normal in image and 'x' axis
 	float tita = (abs(tilt-symm))*(pi/180);											//tita angle - angle between the symmetry axis and the image normal
 	
 	slant = Find_slant(Image_Facial_Normal_length, Eye_Mouth_distance, R_n, tita); //slant angle - angle between the facial normal and the image normal
@@ -265,14 +266,14 @@ IplImage* draw_and_calculate( IplImage* img ){
 	//find pitch and yaw
 	Pitch_k_1 = Pitch;
 	Pitch = acos(sqrt((normal.x*normal.x + normal.z*normal.z)/(normal.x*normal.x + normal.y*normal.y + normal.z*normal.z)));
-	if((Nose_center.y - Nose_base.y)< 0 ){
+	if((F->Nose.y - Nose_base.y)< 0 ){
 		Pitch = Pitch*(-1);
 	}
 	pitch[frame_number] = Pitch*(180/pi);
 
 	Yaw_k_1 = Yaw;
 	Yaw = acos((abs(normal.z))/(sqrt(normal.x*normal.x + normal.z*normal.z)));
-	if((Nose_center.x - Nose_base.x)< 0 ){
+	if((F->Nose.x - Nose_base.x)< 0 ){
 		Yaw = Yaw*(-1);
 	}
 	yaw[frame_number] = Yaw*(180/pi);
@@ -346,13 +347,14 @@ IplImage* draw_and_calculate( IplImage* img ){
 
 
 	//draw lines
-	cvLine(img, Nose_center,		Mouth_center,		CV_RGB(255,0,0), 1, 4, 0);
-	cvLine(img, Nose_center,		LeftEye_center,		CV_RGB(255,0,0), 1, 4, 0);
-	cvLine(img, Nose_center,		RightEye_center,	CV_RGB(255,0,0), 1, 4, 0);
-	cvLine(img, RightEye_center,		LeftEye_center,		CV_RGB(0,0,255), 1, 4, 0);
-	cvLine(img, Eye_center,			Mouth_center,		CV_RGB(0,0,255), 1, 4, 0);
-	cvLine(img, Nose_base,			Nose_center,		CV_RGB(0,0,255), 1, 4, 0);	
-	cvLine(img, Nose_center,		Eye_center,		CV_RGB(255,0,0), 1, 4, 0);
+	//cvPoint(F->LeftEye.x,F->LeftEye.y)
+	cvLine(img, cvPoint(F->Nose.x,F->Nose.y),		cvPoint(F->Mouth.x,F->Mouth.y),		CV_RGB(255,0,0), 1, 4, 0);
+	cvLine(img, cvPoint(F->Nose.x,F->Nose.y),		cvPoint(F->LeftEye.x,F->LeftEye.y),	CV_RGB(255,0,0), 1, 4, 0);
+	cvLine(img, cvPoint(F->Nose.x,F->Nose.y),		cvPoint(F->RightEye.x,F->RightEye.y),	CV_RGB(255,0,0), 1, 4, 0);
+	cvLine(img, cvPoint(F->RightEye.x,F->RightEye.y),	cvPoint(F->LeftEye.x,F->LeftEye.y),	CV_RGB(0,0,255), 1, 4, 0);
+	cvLine(img, cvPoint(Eye_center.x,Eye_center.y),		cvPoint(F->Mouth.x,F->Mouth.y),		CV_RGB(0,0,255), 1, 4, 0);
+	cvLine(img, cvPoint(Nose_base.x,Nose_base.y),		cvPoint(F->Nose.x,F->Nose.y),		CV_RGB(0,0,255), 1, 4, 0);	
+	cvLine(img, cvPoint(F->Nose.x,F->Nose.y),		cvPoint(Eye_center.x,Eye_center.y),	CV_RGB(255,0,0), 1, 4, 0);
 
 
 
@@ -428,8 +430,8 @@ IplImage* draw_and_calculate( IplImage* img ){
 
 		||
 		(LeftEye_RightEye_distance > init_LeftEye_RightEye_distance*1.3
-		&& Nose_center.y <= Eye_center.y + 10
-		&& Mouth_center.y <= Nose_center.y + 10
+		&& F->Nose.y <= Eye_center.y + 10
+		&& F->Mouth.y <= F->Nose.y + 10
 		)
 		){
 
@@ -439,6 +441,7 @@ IplImage* draw_and_calculate( IplImage* img ){
 
 	return img;
 }
+
 
 //Function to return distance between 2 points in image
 float FindDistance(CvPoint pt1, CvPoint pt2){
@@ -451,12 +454,23 @@ float FindDistance(CvPoint pt1, CvPoint pt2){
 	return (float)sqrt(z);
 }
 
+//Function to return distance between 2 points in image
+float FindDistance2D32f(CvPoint2D32f pt1, CvPoint2D32f pt2){
+	double x,y;
+	double z;
+	x = pt1.x - pt2.x;
+	y = pt1.y - pt2.y;
+	z = (x*x)+(y*y);
+
+	return (float)sqrt(z);
+}
+
 //unctio to return angle between 2 points in image
-float FindAngle(CvPoint pt1, CvPoint pt2)
+float FindAngle(CvPoint2D32f pt1, CvPoint2D32f pt2)
 	{
 
 	float angle;
-	angle = cvFastArctan(pt2.y - pt1.y,pt2.x - pt1.x);
+	angle = cvFastArctan(pt2.y - pt1.y, pt2.x - pt1.x);
 
 	return 360-angle;
 	}

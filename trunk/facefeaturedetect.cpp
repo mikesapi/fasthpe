@@ -34,11 +34,11 @@ static CvMemStorage* storage = cvCreateMemStorage(0);		// memory for detector to
 double scale_factor = 1;
 
 //create CvPoint structures to hold the located feature coordinates
-CvPoint Face_center;
-CvPoint LeftEye_center;
-CvPoint RightEye_center;
-CvPoint Nose_center;
-CvPoint Mouth_center;
+// CvPoint Face_center;
+// CvPoint LeftEye_center;
+// CvPoint RightEye_center;
+// CvPoint Nose_center;
+// CvPoint Mouth_center;
 
 CvRect* r;
 
@@ -112,7 +112,7 @@ void closeFaceDet()
 
 
 // Function that returns detected face and detected features
-IplImage* detect_features( IplImage* img )
+IplImage* detect_features2( IplImage* img, Face* F )
 {
     
     IplImage *gray, *small_img;//temporary images
@@ -191,8 +191,8 @@ IplImage* detect_features( IplImage* img )
             cvRectangle( img, pt1, pt2, CV_RGB(255,0,0), 3, 8, 0 );
 
 			//Find the center point of the face
-            Face_center.x = cvRound((r->x + r->width*0.5)*scale_factor); // Find the dimensions of the face,and scale_factor it if necessary
-            Face_center.y = cvRound((r->y + r->height*0.5)*scale_factor);
+            F->Face.x = cvRound((r->x + r->width*0.5)*scale_factor); // Find the dimensions of the face,and scale_factor it if necessary
+            F->Face.y = cvRound((r->y + r->height*0.5)*scale_factor);
 
             //radius = cvRound((r->width + r->height)*0.25*scale_factor);
             //cvCircle( img, center, radius, color, 3, 8, 0 ); // Draw the circle in the input image
@@ -227,10 +227,10 @@ IplImage* detect_features( IplImage* img )
             for( j = 0; j < (noses ? noses->total : 0); j++ )
             {
                 CvRect* nr = (CvRect*)cvGetSeqElem( noses, j );
-                Nose_center.x = cvRound((r->x + nr->x + nr->width*0.5)*scale_factor) + cvRound (r->width/4);
-                Nose_center.y = cvRound((r->y + nr->y + nr->height*0.5)*scale_factor) +10+ cvRound (r->height/4);
+                F->Nose.x = cvRound((r->x + nr->x + nr->width*0.5)*scale_factor) + cvRound (r->width/4);
+                F->Nose.y = cvRound((r->y + nr->y + nr->height*0.5)*scale_factor) +10+ cvRound (r->height/4);
                 radius = cvRound((nr->width + nr->height)*0.25*scale_factor);
-                cvCircle( img, Nose_center, radius, CV_RGB(0,255,0), 3, 8, 0 );			//draw circle around nose
+                cvCircle( img, cvPoint(F->Nose.x,F->Nose.y), radius, CV_RGB(0,255,0), 3, 8, 0 );			//draw circle around nose
 			}
 			//Reset the image ROI
 			cvResetImageROI( small_img);
@@ -264,31 +264,31 @@ IplImage* detect_features( IplImage* img )
 				//for the 1st eye found..
 				if(k==0){
                 CvRect* nr = (CvRect*)cvGetSeqElem( eyes, k );
-                LeftEye_center.x = cvRound((r->x + nr->x + nr->width*0.5)*scale_factor);
-                LeftEye_center.y = cvRound((r->y + nr->y + nr->height*0.5)*scale_factor) + 15;
+                F->LeftEye.x = cvRound((r->x + nr->x + nr->width*0.5)*scale_factor);
+                F->LeftEye.y = cvRound((r->y + nr->y + nr->height*0.5)*scale_factor) + 15;
                 radius = cvRound((nr->width + nr->height)*0.25*scale_factor);
-                cvCircle( img, LeftEye_center, radius, CV_RGB(0,0,255), 3, 8, 0 ); //draw circle around eye1
+                cvCircle( img, cvPoint(F->LeftEye.x,F->LeftEye.y), radius, CV_RGB(0,0,255), 3, 8, 0 ); //draw circle around eye1
 				}
 
 				//for the 2nd eye found..
 				if(k==1){
                 CvRect* nr = (CvRect*)cvGetSeqElem( eyes, k );
-                RightEye_center.x = cvRound((r->x + nr->x + nr->width*0.5)*scale_factor);
-                RightEye_center.y = cvRound((r->y + nr->y + nr->height*0.5)*scale_factor) + 15;
+                F->RightEye.x = cvRound((r->x + nr->x + nr->width*0.5)*scale_factor);
+                F->RightEye.y = cvRound((r->y + nr->y + nr->height*0.5)*scale_factor) + 15;
                 radius = cvRound((nr->width + nr->height)*0.25*scale_factor);
-                cvCircle( img, RightEye_center, radius, CV_RGB(0,0,255), 3, 8, 0 ); //draw circle around eye2
+                cvCircle( img, cvPoint(F->RightEye.x,F->RightEye.y), radius, CV_RGB(0,0,255), 3, 8, 0 ); //draw circle around eye2
 				}
 
 				//make sure the left eye is on the left, and the right eye is on the right!
 				int hold1, hold2;
-				if (LeftEye_center.x > RightEye_center.x && k==1){
+				if (F->LeftEye.x > F->RightEye.x && k==1){
 					CvRect* nr = (CvRect*)cvGetSeqElem( eyes, k );
-					hold1 = LeftEye_center.x;
-					hold2 = LeftEye_center.y;
-					LeftEye_center.x = cvRound((r->x + nr->x + nr->width*0.5)*scale_factor);
-					LeftEye_center.y = cvRound((r->y + nr->y + nr->height*0.5)*scale_factor) + 15;
-					RightEye_center.x = hold1;
-					RightEye_center.y = hold2;
+					hold1 = F->LeftEye.x;
+					hold2 = F->LeftEye.y;
+					F->LeftEye.x = cvRound((r->x + nr->x + nr->width*0.5)*scale_factor);
+					F->LeftEye.y = cvRound((r->y + nr->y + nr->height*0.5)*scale_factor) + 15;
+					F->RightEye.x = hold1;
+					F->RightEye.y = hold2;
 			}
 
 			}
@@ -320,11 +320,11 @@ IplImage* detect_features( IplImage* img )
 			for( l = 0; l < (mouth ? mouth->total : 0); l++ )
             {
                 CvRect* nr = (CvRect*)cvGetSeqElem( mouth, l );
-                Mouth_center.x = cvRound((r->x + nr->x + nr->width*0.5)*scale_factor)+ cvRound (r->width/4);
+                F->Mouth.x = cvRound((r->x + nr->x + nr->width*0.5)*scale_factor)+ cvRound (r->width/4);
                 //Mouth_center.y = cvRound((r->y + nr->y + nr->height*0.5)*scale_factor) + 10+(cvRound (r->height/2));
-				Mouth_center.y = cvRound((r->y + nr->y + nr->height*0.5)*scale_factor) +(cvRound (r->height/2));
+		F->Mouth.y = cvRound((r->y + nr->y + nr->height*0.5)*scale_factor) +(cvRound (r->height/2));
                 radius = cvRound((nr->width + nr->height)*0.25*scale_factor);
-                cvCircle( img, Mouth_center, radius, CV_RGB(255,255,0), 3, 8, 0 ); //draw circle around mouth
+                cvCircle( img, cvPoint(F->Mouth.x,F->Mouth.y), radius, CV_RGB(255,255,0), 3, 8, 0 ); //draw circle around mouth
 			}
 			cvResetImageROI( small_img);
 

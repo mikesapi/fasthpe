@@ -18,14 +18,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef POSE_ESTIMATION_H
 #define POSE_ESTIMATION_H
 
-IplImage* draw_and_calculate( IplImage* img );
+IplImage* draw_and_calculate( IplImage* img, Face* F );
 float	FindDistance	(CvPoint pt1, CvPoint pt2);
-float	FindAngle		(CvPoint pt1, CvPoint pt2);
+float	FindDistance2D32f	(CvPoint2D32f pt1, CvPoint2D32f pt2);
+float	FindAngle		(CvPoint2D32f pt1, CvPoint2D32f pt2);
 float	Find_slant		(int ln, int lf, float Rn, float tita);
 void 	draw_crosshair(IplImage* img, CvPoint centre, int circle_radius, int line_radius, CvScalar colour);
 void 	play_game(IplImage* img, int precision, CvPoint Position, CvScalar ball_colour);
 void 	draw_pin(IplImage* img, CvPoint3D32f normal, float slant, float tita, CvScalar colour);
-void    init_geometric_model(void);
+void    init_geometric_model2(Face* F);
 void    init_kalman_filter(void);
 void 	print_text(IplImage* img, int counter, CvScalar colour);
 void 	draw_trail(IplImage* img, CvPoint* pt);
