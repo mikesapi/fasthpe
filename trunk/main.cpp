@@ -52,8 +52,6 @@ const char * DISPLAY_WINDOW = "DisplayWindow";
 IplImage  * FrameCopy = 0;
 IplImage  * DisplayFrame = 0;
 
-extern CvRect* r;
-
 int initAll();
 void exitProgram(int code);
 void captureVideoFrame();
@@ -64,12 +62,12 @@ bool isFace = 0;
 
 bool CheckForFace(Face* F){
   
-	return	(F->LeftEye.x > 0. && F->RightEye.x > 0. && F->Nose.x > 0. && F->Mouth.x > 0.
-		&& (F->RightEye.x - F->LeftEye.x) > (r->width)/4.
-		&& ((F->RightEye.x + F->LeftEye.x + F->Nose.x)/3.) > F->Nose.x -5.
-		&& ((F->RightEye.y + F->LeftEye.y + F->Nose.y)/3.) > F->Nose.y -20.
-		&& ((F->RightEye.x + F->LeftEye.x + F->Nose.x)/3.) < F->Nose.x +5.
-		&& ((F->RightEye.y + F->LeftEye.y + F->Nose.y)/3.) < F->Nose.y +10.
+	return	(F->LeftEye.x > 0. && F->RightEye.x > 0. && F->Nose.x > 0. && F->Mouth.x > 0. //check all features were initialized
+		&& (F->RightEye.x - F->LeftEye.x) > (F->FaceBox->width)/4.
+// 		&& ((F->RightEye.x + F->LeftEye.x + F->Nose.x)/3.) > F->Nose.x - (double)F->NoseBox->width
+// 		&& ((F->RightEye.y + F->LeftEye.y + F->Nose.y)/3.) > F->Nose.y - (double)F->NoseBox->height
+// 		&& ((F->RightEye.x + F->LeftEye.x + F->Nose.x)/3.) < F->Nose.x + (double)F->NoseBox->width
+// 		&& ((F->RightEye.y + F->LeftEye.y + F->Nose.y)/3.) < F->Nose.y + (double)F->NoseBox->height
 	);
   
 }
@@ -110,7 +108,7 @@ int main(int argc, char** argv)
 		// exit loop when a face is detected
 		
 		isFace = CheckForFace(FPtr);
-		
+		//isFace=1;
 		if(isFace)	break;
 	}
 

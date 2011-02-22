@@ -78,8 +78,8 @@ int initCapture()
 	//capture = cvCreateCameraCapture(1);
 	//capture = cvCaptureFromCAM( 1 );
 	//capture = cvCaptureFromCAM(-1);
-	//cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_WIDTH, W );
-	//cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_HEIGHT, H );
+	cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_WIDTH, W );
+	cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_HEIGHT, H );
 	//cvSetCaptureProperty(capture, CV_CAP_PROP_FPS, 30.0);
 
 	if( !capture )

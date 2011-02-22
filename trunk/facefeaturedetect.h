@@ -30,7 +30,12 @@ struct facefeatures{
  CvPoint2D32f	NoseBase;
  CvPoint2D32f 	MidEyes;
  
-  
+ CvRect* FaceBox;
+ CvRect* NoseBox;
+ CvRect* EyeBox1;
+ CvRect* EyeBox2;
+ CvRect* MouthBox; 
+ 
 };
 typedef struct facefeatures Face;
 

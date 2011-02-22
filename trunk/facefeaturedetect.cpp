@@ -40,7 +40,7 @@ double scale_factor = 1;
 // CvPoint Nose_center;
 // CvPoint Mouth_center;
 
-CvRect* r;
+//CvRect* r;
 
 
 
@@ -178,21 +178,21 @@ IplImage* detect_features2( IplImage* img, Face* F )
         for( i = 0; i < (faces ? faces->total : 0); i++ )
 		{
 			
-            r = (CvRect*)cvGetSeqElem( faces, i ); // Create a new rectangle for drawing the face
+            F->FaceBox = (CvRect*)cvGetSeqElem( faces, i ); // Create a new rectangle for drawing the face
 
 
 			// Find the dimensions of the face, and scale_factor it if necessary
-            pt1.x = r->x*scale_factor;
-            pt2.x = (r->x+r->width)*scale_factor;
-            pt1.y = r->y*scale_factor;
-            pt2.y = (r->y+r->height)*scale_factor;
+            pt1.x = F->FaceBox->x*scale_factor;
+            pt2.x = (F->FaceBox->x+F->FaceBox->width)*scale_factor;
+            pt1.y = F->FaceBox->y*scale_factor;
+            pt2.y = (F->FaceBox->y+F->FaceBox->height)*scale_factor;
 
             // Draw rectangle around face in the input image
             cvRectangle( img, pt1, pt2, CV_RGB(255,0,0), 3, 8, 0 );
 
 			//Find the center point of the face
-            F->Face.x = cvRound((r->x + r->width*0.5)*scale_factor); // Find the dimensions of the face,and scale_factor it if necessary
-            F->Face.y = cvRound((r->y + r->height*0.5)*scale_factor);
+            F->Face.x = cvRound((F->FaceBox->x + F->FaceBox->width*0.5)*scale_factor); // Find the dimensions of the face,and scale_factor it if necessary
+            F->Face.y = cvRound((F->FaceBox->y + F->FaceBox->height*0.5)*scale_factor);
 
             //radius = cvRound((r->width + r->height)*0.25*scale_factor);
             //cvCircle( img, center, radius, color, 3, 8, 0 ); // Draw the circle in the input image
@@ -202,7 +202,7 @@ IplImage* detect_features2( IplImage* img, Face* F )
 			if(noseCascade)
 			{
 			//Set the Region of Interest to the middle part of the face image to locate the nose
-			cvSetImageROI( small_img, cvRect(r->x + cvRound(r->width/4),r->y+10+cvRound(r->height/4),cvRound(r->width/2),cvRound (r->height/2)) );
+			cvSetImageROI( small_img, cvRect(F->FaceBox->x + cvRound(F->FaceBox->width/4),F->FaceBox->y+10+cvRound(F->FaceBox->height/4),cvRound(F->FaceBox->width/2),cvRound (F->FaceBox->height/2)) );
 		
 			//See what the ROI is:
 			/*cvNamedWindow("ROI Window", CV_WINDOW_AUTOSIZE);
@@ -227,8 +227,8 @@ IplImage* detect_features2( IplImage* img, Face* F )
             for( j = 0; j < (noses ? noses->total : 0); j++ )
             {
                 CvRect* nr = (CvRect*)cvGetSeqElem( noses, j );
-                F->Nose.x = cvRound((r->x + nr->x + nr->width*0.5)*scale_factor) + cvRound (r->width/4);
-                F->Nose.y = cvRound((r->y + nr->y + nr->height*0.5)*scale_factor) +10+ cvRound (r->height/4);
+                F->Nose.x = cvRound((F->FaceBox->x + nr->x + nr->width*0.5)*scale_factor) + cvRound (F->FaceBox->width/4);
+                F->Nose.y = cvRound((F->FaceBox->y + nr->y + nr->height*0.5)*scale_factor) +10+ cvRound (F->FaceBox->height/4);
                 radius = cvRound((nr->width + nr->height)*0.25*scale_factor);
                 cvCircle( img, cvPoint(F->Nose.x,F->Nose.y), radius, CV_RGB(0,255,0), 3, 8, 0 );			//draw circle around nose
 			}
@@ -240,7 +240,7 @@ IplImage* detect_features2( IplImage* img, Face* F )
 			if(eyesCascade)
 			{
             
-			cvSetImageROI( small_img, cvRect(r->x,r->y+15,r->width,cvRound (r->height/2)) );
+			cvSetImageROI( small_img, cvRect(F->FaceBox->x,F->FaceBox->y+15,F->FaceBox->width,cvRound (F->FaceBox->height/2)) );
 
 	
 
@@ -263,30 +263,30 @@ IplImage* detect_features2( IplImage* img, Face* F )
             {
 				//for the 1st eye found..
 				if(k==0){
-                CvRect* nr = (CvRect*)cvGetSeqElem( eyes, k );
-                F->LeftEye.x = cvRound((r->x + nr->x + nr->width*0.5)*scale_factor);
-                F->LeftEye.y = cvRound((r->y + nr->y + nr->height*0.5)*scale_factor) + 15;
-                radius = cvRound((nr->width + nr->height)*0.25*scale_factor);
+                F->EyeBox1 = (CvRect*)cvGetSeqElem( eyes, k );
+                F->LeftEye.x = cvRound((F->FaceBox->x + F->EyeBox1->x + F->EyeBox1->width*0.5)*scale_factor);
+                F->LeftEye.y = cvRound((F->FaceBox->y + F->EyeBox1->y + F->EyeBox1->height*0.5)*scale_factor) + 15;
+                radius = cvRound((F->EyeBox1->width + F->EyeBox1->height)*0.25*scale_factor);
                 cvCircle( img, cvPoint(F->LeftEye.x,F->LeftEye.y), radius, CV_RGB(0,0,255), 3, 8, 0 ); //draw circle around eye1
 				}
 
 				//for the 2nd eye found..
 				if(k==1){
-                CvRect* nr = (CvRect*)cvGetSeqElem( eyes, k );
-                F->RightEye.x = cvRound((r->x + nr->x + nr->width*0.5)*scale_factor);
-                F->RightEye.y = cvRound((r->y + nr->y + nr->height*0.5)*scale_factor) + 15;
-                radius = cvRound((nr->width + nr->height)*0.25*scale_factor);
+                F->EyeBox2 = (CvRect*)cvGetSeqElem( eyes, k );
+                F->RightEye.x = cvRound((F->FaceBox->x + F->EyeBox2->x + F->EyeBox2->width*0.5)*scale_factor);
+                F->RightEye.y = cvRound((F->FaceBox->y + F->EyeBox2->y + F->EyeBox2->height*0.5)*scale_factor) + 15;
+                radius = cvRound((F->EyeBox2->width + F->EyeBox2->height)*0.25*scale_factor);
                 cvCircle( img, cvPoint(F->RightEye.x,F->RightEye.y), radius, CV_RGB(0,0,255), 3, 8, 0 ); //draw circle around eye2
 				}
 
 				//make sure the left eye is on the left, and the right eye is on the right!
 				int hold1, hold2;
 				if (F->LeftEye.x > F->RightEye.x && k==1){
-					CvRect* nr = (CvRect*)cvGetSeqElem( eyes, k );
+					//CvRect* nr = (CvRect*)cvGetSeqElem( eyes, k );
 					hold1 = F->LeftEye.x;
 					hold2 = F->LeftEye.y;
-					F->LeftEye.x = cvRound((r->x + nr->x + nr->width*0.5)*scale_factor);
-					F->LeftEye.y = cvRound((r->y + nr->y + nr->height*0.5)*scale_factor) + 15;
+					F->LeftEye.x = cvRound((F->FaceBox->x + F->EyeBox2->x + F->EyeBox2->width*0.5)*scale_factor);
+					F->LeftEye.y = cvRound((F->FaceBox->y + F->EyeBox2->y + F->EyeBox2->height*0.5)*scale_factor) + 15;
 					F->RightEye.x = hold1;
 					F->RightEye.y = hold2;
 			}
@@ -299,8 +299,8 @@ IplImage* detect_features2( IplImage* img, Face* F )
 			if( mouthCascade )
 			{
 
-			//cvSetImageROI( small_img, cvRect(r->x+cvRound (r->width/4),r->y+10+(cvRound (r->height/2)),cvRound (r->width/2),cvRound (r->height/2)) );
-			cvSetImageROI( small_img, cvRect(r->x+cvRound (r->width/4),r->y+(cvRound (r->height/2)),cvRound (r->width/2),cvRound (r->height/2)) );
+			//cvSetImageROI( small_img, cvRect(r->x+cvRound (F->FaceBox->width/4),F->FaceBox->y+10+(cvRound (F->FaceBox->height/2)),cvRound (F->FaceBox->width/2),cvRound (F->FaceBox->height/2)) );
+			cvSetImageROI( small_img, cvRect(F->FaceBox->x+cvRound (F->FaceBox->width/4),F->FaceBox->y+(cvRound (F->FaceBox->height/2)),cvRound (F->FaceBox->width/2),cvRound (F->FaceBox->height/2)) );
 			
             CvSeq* mouth = cvHaarDetectObjects( 
 										small_img, 
@@ -319,11 +319,11 @@ IplImage* detect_features2( IplImage* img, Face* F )
 			// Loop the number of mouths found.
 			for( l = 0; l < (mouth ? mouth->total : 0); l++ )
             {
-                CvRect* nr = (CvRect*)cvGetSeqElem( mouth, l );
-                F->Mouth.x = cvRound((r->x + nr->x + nr->width*0.5)*scale_factor)+ cvRound (r->width/4);
-                //Mouth_center.y = cvRound((r->y + nr->y + nr->height*0.5)*scale_factor) + 10+(cvRound (r->height/2));
-		F->Mouth.y = cvRound((r->y + nr->y + nr->height*0.5)*scale_factor) +(cvRound (r->height/2));
-                radius = cvRound((nr->width + nr->height)*0.25*scale_factor);
+                F->MouthBox = (CvRect*)cvGetSeqElem( mouth, l );
+                F->Mouth.x = cvRound((F->FaceBox->x + F->MouthBox->x + F->MouthBox->width*0.5)*scale_factor)+ cvRound (F->FaceBox->width/4);
+                //Mouth_center.y = cvRound((F->FaceBox->y + F->MouthBox->y + F->MouthBox->height*0.5)*scale_factor) + 10+(cvRound (F->FaceBox->height/2));
+		F->Mouth.y = cvRound((F->FaceBox->y + F->MouthBox->y + F->MouthBox->height*0.5)*scale_factor) +(cvRound (F->FaceBox->height/2));
+                radius = cvRound((F->MouthBox->width + F->MouthBox->height)*0.25*scale_factor);
                 cvCircle( img, cvPoint(F->Mouth.x,F->Mouth.y), radius, CV_RGB(255,255,0), 3, 8, 0 ); //draw circle around mouth
 			}
 			cvResetImageROI( small_img);
