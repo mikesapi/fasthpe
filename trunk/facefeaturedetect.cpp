@@ -103,6 +103,11 @@ void closeFaceDet()
 // Function that returns detected face and detected features
 IplImage* detect_features( IplImage* img, Face* F )
 {
+  
+//     CvSeq* faces;
+//     CvSeq* noses;
+//     CvSeq* eyes;
+//     CvSeq* mouth;
     
     IplImage *gray, *small_img; //temporary images
 
@@ -290,7 +295,7 @@ IplImage* detect_features( IplImage* img, Face* F )
 			//cvSetImageROI( small_img, cvRect(r->x+cvRound (F->FaceBox->width/4),F->FaceBox->y+10+(cvRound (F->FaceBox->height/2)),cvRound (F->FaceBox->width/2),cvRound (F->FaceBox->height/2)) );
 			cvSetImageROI( small_img, cvRect(F->FaceBox->x+cvRound (F->FaceBox->width/4),F->FaceBox->y+(cvRound (F->FaceBox->height/2)),cvRound (F->FaceBox->width/2),cvRound (F->FaceBox->height/2)) );
 			
-            CvSeq* mouth = cvHaarDetectObjects( 
+        CvSeq*    mouth = cvHaarDetectObjects( 
 										small_img, 
 										mouthCascade, 
 										storage,
@@ -320,9 +325,13 @@ IplImage* detect_features( IplImage* img, Face* F )
 		}
     }
 
-	// Release the temp images created.
-    cvReleaseImage( &gray );
-    cvReleaseImage( &small_img );
+	// Release the temp images and sequences created.
+// 	cvClearSeq(faces);
+// 	cvClearSeq(noses);
+// 	cvClearSeq(eyes);
+// 	cvClearSeq(mouth);
+	cvReleaseImage( &gray );
+	cvReleaseImage( &small_img );
 
 	//return the image with detected features back to main program
 	return img;

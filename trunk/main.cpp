@@ -110,7 +110,7 @@ int main(int argc, char** argv)
 		
 		
 		isFace = CheckForFace(FPtr); // exit loop when a face is detected
-
+		
 		if(isFace)	break;
 	}
 
