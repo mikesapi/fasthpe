@@ -30,10 +30,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 Face F;
-Face* FPtr = &F;
+Face *FPtr = &F;
 
 FaceGeom G;
-FaceGeom* GPtr = &G;
+FaceGeom *GPtr = &G;
 
 //camera resolution
 extern int W; //width
@@ -47,15 +47,15 @@ extern float pitch[900];
 extern float yaw[900];
 extern float roll[900];
 
-const char * DISPLAY_WINDOW = "DisplayWindow";
+const char *DISPLAY_WINDOW = "DisplayWindow";
 
-IplImage  * FrameCopy = 0;
-IplImage  * DisplayFrame = 0;
+IplImage *FrameCopy = 0;
+IplImage *DisplayFrame = 0;
 
 int initAll();
 void exitProgram(int code);
 void captureVideoFrame();
-void equalize(IplImage* frame);
+void equalize(IplImage *frame);
 
 int key;
 bool isFace = 0;
@@ -91,7 +91,7 @@ int main(int argc, char** argv)
 
 			double t = (double)cvGetTickCount();//start timer
 			
-			DisplayFrame = detect_features(DisplayFrame, FPtr);//detect face and facial features
+			detect_features(DisplayFrame, FPtr);//detect face and facial features
 
 			t = (double)cvGetTickCount() - t;//end timer
 			

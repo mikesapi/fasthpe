@@ -45,6 +45,6 @@ int initFaceDet(const char * faceCascadePath,
 		const char * eyesCascadePath,
 		const char * mouthCascadePath);
 void closeFaceDet();
-IplImage* detect_features( IplImage* img , Face* F);
+void detect_features( IplImage* img , Face* F);
 
 #endif

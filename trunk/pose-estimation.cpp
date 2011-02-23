@@ -59,8 +59,8 @@ extern int frame_number;
 
 extern int is_tracking;
 
-CvMemStorage* storage = cvCreateMemStorage(0);
-CvSeq* seq = cvCreateSeq(CV_SEQ_FLAG_CLOSED | CV_SEQ_KIND_CURVE | CV_SEQ_ELTYPE_POINT, sizeof(CvSeq), sizeof(CvPoint), storage); 
+CvMemStorage *storage = cvCreateMemStorage(0);
+CvSeq *seq = cvCreateSeq(CV_SEQ_FLAG_CLOSED | CV_SEQ_KIND_CURVE | CV_SEQ_ELTYPE_POINT, sizeof(CvSeq), sizeof(CvPoint), storage); 
 
 //variables for 3D model
 

@@ -101,13 +101,14 @@ void closeFaceDet()
 
 
 // Function that returns detected face and detected features
-IplImage* detect_features( IplImage* img, Face* F )
+// IplImage* detect_features( IplImage* img, Face* F )
+void detect_features( IplImage* img, Face* F )
 {
   
-//     CvSeq* faces;
-//     CvSeq* noses;
-//     CvSeq* eyes;
-//     CvSeq* mouth;
+     CvSeq *faces;
+     CvSeq *noses;
+     CvSeq *eyes;
+     CvSeq *mouth;
     
     IplImage *gray, *small_img; //temporary images
 
@@ -135,7 +136,7 @@ IplImage* detect_features( IplImage* img, Face* F )
     if( faceCascade )
 	{
         
-        CvSeq* faces = cvHaarDetectObjects( 
+        faces = cvHaarDetectObjects( 
 											small_img,	//grayscale_factor image. If region of interest (ROI) is set, then the function will
 														//respect that region.Th us, one way of speeding up face detection is to trim 
 														//down the image boundaries using ROI
@@ -201,7 +202,7 @@ IplImage* detect_features( IplImage* img, Face* F )
 			/*cvNamedWindow("ROI Window", CV_WINDOW_AUTOSIZE);
 			cvShowImage( "ROI Window", small_img);*/
 
-            CvSeq* noses = cvHaarDetectObjects( 
+            noses = cvHaarDetectObjects( 
 										small_img,
 										noseCascade,
 										storage,
@@ -227,6 +228,7 @@ IplImage* detect_features( IplImage* img, Face* F )
 			}
 			//Reset the image ROI
 			cvResetImageROI( small_img);
+			cvClearSeq(noses);
 			}
 
 			// Find whether the eyes cascade is loaded. If yes then ..
@@ -237,7 +239,7 @@ IplImage* detect_features( IplImage* img, Face* F )
 
 	
 
-            CvSeq* eyes = cvHaarDetectObjects( 
+            eyes = cvHaarDetectObjects( 
 										small_img, 
 										eyesCascade,
 										storage,
@@ -286,6 +288,7 @@ IplImage* detect_features( IplImage* img, Face* F )
 
 			}
 			cvResetImageROI( small_img);
+			cvClearSeq(eyes);
 			}
 			
 			
@@ -295,7 +298,7 @@ IplImage* detect_features( IplImage* img, Face* F )
 			//cvSetImageROI( small_img, cvRect(r->x+cvRound (F->FaceBox->width/4),F->FaceBox->y+10+(cvRound (F->FaceBox->height/2)),cvRound (F->FaceBox->width/2),cvRound (F->FaceBox->height/2)) );
 			cvSetImageROI( small_img, cvRect(F->FaceBox->x+cvRound (F->FaceBox->width/4),F->FaceBox->y+(cvRound (F->FaceBox->height/2)),cvRound (F->FaceBox->width/2),cvRound (F->FaceBox->height/2)) );
 			
-        CvSeq*    mouth = cvHaarDetectObjects( 
+        mouth = cvHaarDetectObjects( 
 										small_img, 
 										mouthCascade, 
 										storage,
@@ -320,21 +323,23 @@ IplImage* detect_features( IplImage* img, Face* F )
                 cvCircle( img, cvPoint(F->Mouth.x,F->Mouth.y), radius, CV_RGB(255,255,0), 3, 8, 0 ); //draw circle around mouth
 			}
 			cvResetImageROI( small_img);
-
+			cvClearSeq(mouth);
 			}
 		}
+		
+		cvClearSeq(faces);
     }
 
 	// Release the temp images and sequences created.
-// 	cvClearSeq(faces);
-// 	cvClearSeq(noses);
-// 	cvClearSeq(eyes);
-// 	cvClearSeq(mouth);
+ 	
+ 	
+ 	
+	
 	cvReleaseImage( &gray );
 	cvReleaseImage( &small_img );
 
 	//return the image with detected features back to main program
-	return img;
+	//return img;
 
 }
 
