@@ -61,14 +61,16 @@ int key;
 bool isFace = 0;
 
 bool CheckForFace(Face* F){
-  
-	return	(F->LeftEye.x > 0. && F->RightEye.x > 0. && F->Nose.x > 0. && F->Mouth.x > 0. //check all features were initialized
-		&& (F->RightEye.x - F->LeftEye.x) > (F->FaceBox->width)/4.
-// 		&& ((F->RightEye.x + F->LeftEye.x + F->Nose.x)/3.) > F->Nose.x - (double)F->NoseBox->width
-// 		&& ((F->RightEye.y + F->LeftEye.y + F->Nose.y)/3.) > F->Nose.y - (double)F->NoseBox->height
-// 		&& ((F->RightEye.x + F->LeftEye.x + F->Nose.x)/3.) < F->Nose.x + (double)F->NoseBox->width
-// 		&& ((F->RightEye.y + F->LeftEye.y + F->Nose.y)/3.) < F->Nose.y + (double)F->NoseBox->height
+	//NOTE Need to write better function to make sure features are initialized when person is facing camera.
+	if (F->LeftEye.x > 0. && F->RightEye.x > 0. && F->Nose.x > 0. && F->Mouth.x > 0. ){ //check all features were initialized
+	  return(  ((F->RightEye.x - F->LeftEye.x) > ((double)F->FaceBox->width)/4.)
+		&& ((F->RightEye.x + F->LeftEye.x + F->Nose.x)/3.) > (F->Nose.x - ((double)F->NoseBox->width)/2.)
+		&& ((F->RightEye.y + F->LeftEye.y + F->Nose.y)/3.) > (F->Nose.y - ((double)F->NoseBox->height)/2.)
+		&& ((F->RightEye.x + F->LeftEye.x + F->Nose.x)/3.) < (F->Nose.x + ((double)F->NoseBox->width)/2.)
+		&& ((F->RightEye.y + F->LeftEye.y + F->Nose.y)/3.) < (F->Nose.y + ((double)F->NoseBox->height)/2.)
 	);
+	}
+	else return 0;
   
 }
 
@@ -89,10 +91,10 @@ int main(int argc, char** argv)
 
 			double t = (double)cvGetTickCount();//start timer
 			
-			//DisplayFrame = detect_features(DisplayFrame);//detect face and facial features
-			DisplayFrame = detect_features2(DisplayFrame, FPtr);//detect face and facial features
+			DisplayFrame = detect_features(DisplayFrame, FPtr);//detect face and facial features
 
 			t = (double)cvGetTickCount() - t;//end timer
+			
 			//printf( "detection time = %gms\n", t/((double)cvGetTickFrequency()*1000.) );//display timem in ms
 
 			//printf( "Left Eye x=%d y=%d\n", F.LeftEye.x, F.LeftEye.y) ;
@@ -105,10 +107,10 @@ int main(int argc, char** argv)
 			key = cvWaitKey( 10 );
 			if(key == 1048689 || key == 1048603 || key == 'q' )  exitProgram(0);//if user presses Esc or q , exit program
 		}
-		// exit loop when a face is detected
 		
-		isFace = CheckForFace(FPtr);
-		//isFace=1;
+		
+		isFace = CheckForFace(FPtr); // exit loop when a face is detected
+
 		if(isFace)	break;
 	}
 

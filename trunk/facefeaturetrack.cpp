@@ -78,8 +78,8 @@ extern float Roll;
 extern float slant;
 extern float Yaw;
 
-CvPoint LeftEye_center_corner;
-CvPoint RightEye_center_corner;
+// CvPoint LeftEye_center_corner;
+// CvPoint RightEye_center_corner;
 
 IplImage  *Iat,*gray, *mask;
 IplImage *frame;

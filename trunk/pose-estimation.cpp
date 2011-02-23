@@ -28,9 +28,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "pose-estimation.h"
 #include "facefeaturetrack.h"
 
- 
-
-
 //#include <qsound.h>
 using namespace std;
 
@@ -48,10 +45,8 @@ SetConsoleCursorPosition( hStdout, position );
 }*/
 
 //global variables - coordinates of features
-extern CvPoint LeftEye_center_corner;
-
-extern CvPoint LeftEye_center_corner;
-extern CvPoint RightEye_center_corner;
+// extern CvPoint LeftEye_center_corner;
+// extern CvPoint RightEye_center_corner;
 
 extern int W;
 extern int H;
@@ -61,11 +56,8 @@ extern int ldy;
 extern int rdx;
 extern int rdy;
 extern int frame_number;
-//
-extern int is_tracking;
 
-// CvPoint2D32f Eye_center;
-// CvPoint2D32f Nose_base;
+extern int is_tracking;
 
 CvMemStorage* storage = cvCreateMemStorage(0);
 CvSeq* seq = cvCreateSeq(CV_SEQ_FLAG_CLOSED | CV_SEQ_KIND_CURVE | CV_SEQ_ELTYPE_POINT, sizeof(CvSeq), sizeof(CvPoint), storage); 

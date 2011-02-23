@@ -19,8 +19,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define FACE_FEATURE_DETECT_H
 
 struct facefeatures{
-
-  //centre points 
+ //create CvPoint structures to hold the located feature coordinates
+ //centre points 
  CvPoint2D32f 	Face; 
  CvPoint2D32f	LeftEye;	
  CvPoint2D32f	RightEye;
@@ -45,7 +45,6 @@ int initFaceDet(const char * faceCascadePath,
 		const char * eyesCascadePath,
 		const char * mouthCascadePath);
 void closeFaceDet();
-//IplImage* detect_features( IplImage* img );
-IplImage* detect_features2( IplImage* img , Face* F);
+IplImage* detect_features( IplImage* img , Face* F);
 
 #endif

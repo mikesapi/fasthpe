@@ -33,22 +33,11 @@ static CvMemStorage* storage = cvCreateMemStorage(0);		// memory for detector to
 
 double scale_factor = 1;
 
-//create CvPoint structures to hold the located feature coordinates
-// CvPoint Face_center;
-// CvPoint LeftEye_center;
-// CvPoint RightEye_center;
-// CvPoint Nose_center;
-// CvPoint Mouth_center;
-
-//CvRect* r;
-
-
-
 // Function to initialise the face detection process
 int initFaceDet(const char * faceCascadePath,
-				const char * noseCascadePath,
-				const char * eyesCascadePath,
-				const char * mouthCascadePath)
+		const char * noseCascadePath,
+		const char * eyesCascadePath,
+		const char * mouthCascadePath)
 {
 
 	if( !(storage = cvCreateMemStorage(0)) )
@@ -112,14 +101,14 @@ void closeFaceDet()
 
 
 // Function that returns detected face and detected features
-IplImage* detect_features2( IplImage* img, Face* F )
+IplImage* detect_features( IplImage* img, Face* F )
 {
     
-    IplImage *gray, *small_img;//temporary images
+    IplImage *gray, *small_img; //temporary images
 
     int i, j, k, l; //loop variables
 
-	CvPoint pt1, pt2;           
+    CvPoint pt1, pt2;           
 		
     int radius;
 
@@ -180,8 +169,7 @@ IplImage* detect_features2( IplImage* img, Face* F )
 			
             F->FaceBox = (CvRect*)cvGetSeqElem( faces, i ); // Create a new rectangle for drawing the face
 
-
-			// Find the dimensions of the face, and scale_factor it if necessary
+	    // Find the dimensions of the face, and scale_factor it if necessary
             pt1.x = F->FaceBox->x*scale_factor;
             pt2.x = (F->FaceBox->x+F->FaceBox->width)*scale_factor;
             pt1.y = F->FaceBox->y*scale_factor;
@@ -190,7 +178,7 @@ IplImage* detect_features2( IplImage* img, Face* F )
             // Draw rectangle around face in the input image
             cvRectangle( img, pt1, pt2, CV_RGB(255,0,0), 3, 8, 0 );
 
-			//Find the center point of the face
+	    //Find the center point of the face
             F->Face.x = cvRound((F->FaceBox->x + F->FaceBox->width*0.5)*scale_factor); // Find the dimensions of the face,and scale_factor it if necessary
             F->Face.y = cvRound((F->FaceBox->y + F->FaceBox->height*0.5)*scale_factor);
 
@@ -226,10 +214,10 @@ IplImage* detect_features2( IplImage* img, Face* F )
 			// Loop the number of noses found.
             for( j = 0; j < (noses ? noses->total : 0); j++ )
             {
-                CvRect* nr = (CvRect*)cvGetSeqElem( noses, j );
-                F->Nose.x = cvRound((F->FaceBox->x + nr->x + nr->width*0.5)*scale_factor) + cvRound (F->FaceBox->width/4);
-                F->Nose.y = cvRound((F->FaceBox->y + nr->y + nr->height*0.5)*scale_factor) +10+ cvRound (F->FaceBox->height/4);
-                radius = cvRound((nr->width + nr->height)*0.25*scale_factor);
+                F->NoseBox = (CvRect*)cvGetSeqElem( noses, j );
+                F->Nose.x = cvRound((F->FaceBox->x + F->NoseBox->x + F->NoseBox->width*0.5)*scale_factor) + cvRound (F->FaceBox->width/4);
+                F->Nose.y = cvRound((F->FaceBox->y + F->NoseBox->y + F->NoseBox->height*0.5)*scale_factor) +10+ cvRound (F->FaceBox->height/4);
+                radius = cvRound((F->NoseBox->width + F->NoseBox->height)*0.25*scale_factor);
                 cvCircle( img, cvPoint(F->Nose.x,F->Nose.y), radius, CV_RGB(0,255,0), 3, 8, 0 );			//draw circle around nose
 			}
 			//Reset the image ROI
