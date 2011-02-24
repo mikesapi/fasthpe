@@ -103,7 +103,8 @@ int main(int argc, char** argv)
 			//printf( "Mouth x=%d y=%d\n\n\n", F.Nose.x, F.Nose.y) ;
 
 			cvShowImage(DISPLAY_WINDOW, DisplayFrame );//show result
-
+			
+			cvReleaseImage( &DisplayFrame);
 			key = cvWaitKey( 10 );
 			if(key == 1048689 || key == 1048603 || key == 'q' )  exitProgram(0);//if user presses Esc or q , exit program
 		}
