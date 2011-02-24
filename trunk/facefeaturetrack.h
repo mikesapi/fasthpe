@@ -18,6 +18,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef FACE_FEATURE_TRACK_H
 #define FACE_FEATURE_TRACK_H
 
+//include templates structure
+
 void closeTemplateMatch();
 int initTracker(IplImage* frame, Face* F );
 //int dynamicTracker(IplImage* frame, CvPoint L, CvPoint R, CvPoint N, CvPoint M );

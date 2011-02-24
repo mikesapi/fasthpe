@@ -75,17 +75,17 @@ float  R_e = 0.91;
 double pi = 3.141592653589;
 //
 
-float Pitch = 0;
-float Pitch_k_1;
-float Pitch_kalman;
-float Roll;
-float slant;
-float Yaw = 0;
-float Yaw_k_1;
-float Yaw_kalman;
-float pitch[900];
-float yaw[900];
-float roll[900];
+// float Pitch = 0;
+// float Pitch_k_1;
+// float Pitch_kalman;
+// float Roll;
+// float slant;
+// float Yaw = 0;
+// float Yaw_k_1;
+// float Yaw_kalman;
+// float pitch[900];
+// float yaw[900];
+// float roll[900];
 
 float scale;
 CvPoint rand_coord;
@@ -171,7 +171,7 @@ cvZero( z_k );
 	cvRand( &rng, kalman->state_post ); // Choose random initial state
 }
 
-void init_geometric_model(Face* F, FaceGeom* G)
+void init_geometric_model(Face *F, FaceGeom *G, Pose *P)
 {
 	G->init_LeftEye_Nose_distance 	= FindDistance2D32f(F->Nose, F->LeftEye);	//initial distance between Nose center and left Eye
 	G->init_RightEye_Nose_distance 	= FindDistance2D32f(F->Nose, F->RightEye);	//initial distance between Nose center and right Eye
@@ -188,20 +188,26 @@ void init_geometric_model(Face* F, FaceGeom* G)
 	G->Nose_Mouth_distance 		= G->init_Nose_Mouth_distance;
 	G->Mean_Feature_distance 	= G->init_Mean_Feature_distance;	
 	
+	P->yaw = 0.;
+	P->pitch = 0.;
+	P->roll = 0.;
+	
 	rand_coord.x = W/2;
 	rand_coord.y = H/2;
 	srand( time(NULL));
 	
-	pointer_2d.x = (F->NoseBase.x + cvRound(500*(tan((double)Yaw))));
-	pointer_2d.y = (F->NoseBase.y + cvRound(500*(tan((double)Pitch))));
+	pointer_2d.x = (F->NoseBase.x + cvRound(500*(tan((double)P->yaw))));
+	pointer_2d.y = (F->NoseBase.y + cvRound(500*(tan((double)P->pitch))));
+	//pointer_2d.x = F->NoseBase.x;
+	//pointer_2d.y = F->NoseBase.y;
 	
-	mouse.x = 1280/2 - 320/2 + ((F->NoseBase.x + cvRound(1500*(tan((double)Yaw)))));
-	mouse.y = 800/2 - 240/2 + ((F->NoseBase.y + cvRound(1500*(tan((double)Pitch)))));
+	//mouse.x = 1280/2 - 320/2 + ((F->NoseBase.x + cvRound(1500*(tan((double)Yaw)))));
+	//mouse.y = 800/2 - 240/2 + ((F->NoseBase.y + cvRound(1500*(tan((double)Pitch)))));
 	t = 0;
 }
 
 //Function to calculate head pose and draw lines connecting features
-IplImage* draw_and_calculate( IplImage* img, Face* F, FaceGeom* G){
+void draw_and_calculate( IplImage *img, Face *F, FaceGeom *G, Pose *P){
 
 	//Find center point between the eyes
 	F->MidEyes.x = (F->LeftEye.x + F->RightEye.x)/2;
@@ -231,44 +237,44 @@ IplImage* draw_and_calculate( IplImage* img, Face* F, FaceGeom* G){
 	float Image_Facial_Normal_length = FindDistance2D32f(F->NoseBase, F->Nose);			//distance between Nose base and Nose center
 	float Eye_Mouth_distance = FindDistance2D32f(F->MidEyes, F->Mouth);				//distance between Eye center and Mouth center
 
-	/*Roll = FindAngle(F->LeftEye, F->RightEye);						//roll angle - angle between left Eye and right Eye
-	if (Roll > 180){
-		Roll = Roll-360;
+	/*P->roll = FindAngle(F->LeftEye, F->RightEye);						//roll angle - angle between left Eye and right Eye
+	if (P->roll > 180){
+		P->roll = P->roll-360;
 	}
-	roll[frame_number] = Roll;*/
+	roll[frame_number] = P->roll;*/
 
-	Roll = FindAngle(F->LeftEye, F->RightEye);						//roll angle - angle between left Eye and right Eye
-	if (Roll > 180){
-		Roll = Roll-360;
+	P->roll = FindAngle(F->LeftEye, F->RightEye);						//roll angle - angle between left Eye and right Eye
+	if (P->roll > 180){
+		P->roll = P->roll-360;
 	}
-	roll[frame_number] = Roll;
+	//roll[frame_number] = P->roll;
 
 	float symm = FindAngle(F->NoseBase, F->MidEyes);									//symm angle - angle between the symmetry axis and the 'x' axis 
 	float tilt = FindAngle(F->NoseBase, F->Nose);									//tilt angle - angle between normal in image and 'x' axis
 	float tita = (abs(tilt-symm))*(pi/180);											//tita angle - angle between the symmetry axis and the image normal
 	
-	slant = Find_slant(Image_Facial_Normal_length, Eye_Mouth_distance, R_n, tita); //slant angle - angle between the facial normal and the image normal
+	P->slant = Find_slant(Image_Facial_Normal_length, Eye_Mouth_distance, R_n, tita); //slant angle - angle between the facial normal and the image normal
 	
 	//define a 3D vector for the facial normal
 	CvPoint3D32f normal;
-	normal.x = (sin(slant))*(cos((360-tilt)*(pi/180)));
-	normal.y = (sin(slant))*(sin((360-tilt)*(pi/180)));
-	normal.z = -cos(slant);
+	normal.x = (sin(P->slant))*(cos((360-tilt)*(pi/180)));
+	normal.y = (sin(P->slant))*(sin((360-tilt)*(pi/180)));
+	normal.z = -cos(P->slant);
 
 	//find pitch and yaw
-	Pitch_k_1 = Pitch;
-	Pitch = acos(sqrt((normal.x*normal.x + normal.z*normal.z)/(normal.x*normal.x + normal.y*normal.y + normal.z*normal.z)));
+	P->kpitch_pre = P->pitch;
+	P->pitch = acos(sqrt((normal.x*normal.x + normal.z*normal.z)/(normal.x*normal.x + normal.y*normal.y + normal.z*normal.z)));
 	if((F->Nose.y - F->NoseBase.y)< 0 ){
-		Pitch = Pitch*(-1);
+		P->pitch = P->pitch*(-1);
 	}
-	pitch[frame_number] = Pitch*(180/pi);
+	//pitch[frame_number] = P->pitch*(180/pi);
 
-	Yaw_k_1 = Yaw;
-	Yaw = acos((abs(normal.z))/(sqrt(normal.x*normal.x + normal.z*normal.z)));
+	P->kyaw_pre = P->yaw;
+	P->yaw = acos((abs(normal.z))/(sqrt(normal.x*normal.x + normal.z*normal.z)));
 	if((F->Nose.x - F->NoseBase.x)< 0 ){
-		Yaw = Yaw*(-1);
+		P->yaw = P->yaw*(-1);
 	}
-	yaw[frame_number] = Yaw*(180/pi);
+	//yaw[frame_number] = P->yaw*(180/pi);
 
 //////////////////////////Kalman Filter Code///////////////////////////////
 
@@ -284,23 +290,23 @@ IplImage* draw_and_calculate( IplImage* img, Face* F, FaceGeom* G){
 //	double error_noise = 	(1 + (int)( 50.0 * rand() / ( RAND_MAX + 1.0 ) ))*0.01;
 //	cvSetIdentity( kalman->measurement_noise_cov, cvRealScalar(5e-2 + error_noise) );
 
-	cvmSet(x_k, 0,0, Pitch);
-	cvmSet(x_k, 1,0, (Pitch - Pitch_k_1)   ); //velocity = X pixels/frame ?????
-	cvmSet(x_k, 2,0, Yaw);
-	cvmSet(x_k, 3,0, (Yaw - Yaw_k_1)   );
+	cvmSet(x_k, 0,0, P->pitch);
+	cvmSet(x_k, 1,0, (P->pitch - P->kpitch_pre)   ); //velocity = X pixels/frame ?????
+	cvmSet(x_k, 2,0, P->yaw);
+	cvmSet(x_k, 3,0, (P->yaw - P->kyaw_pre)   );
 
 /*	
-	cvmSet(x_k, 0,0, Roll);
-	cvmSet(x_k, 1,0, Pitch);
-	cvmSet(x_k, 2,0, Yaw);
+	cvmSet(x_k, 0,0, P->roll);
+	cvmSet(x_k, 1,0, P->pitch);
+	cvmSet(x_k, 2,0, P->yaw);
 	cvmSet(x_k, 3,0, Nose_base.x);
 	cvmSet(x_k, 4,0, Nose_base.y);
 	cvmSet(x_k, 5,0, scale);
 */
 /*	
-	cvmSet(z_k, 0,0, Roll);
-	cvmSet(z_k, 1,0, Pitch);
-	cvmSet(z_k, 2,0, Yaw);
+	cvmSet(z_k, 0,0, P->roll);
+	cvmSet(z_k, 1,0, P->pitch);
+	cvmSet(z_k, 2,0, P->yaw);
 	cvmSet(z_k, 3,0, Nose_base.x);
 	cvmSet(z_k, 4,0, Nose_base.y);
 	cvmSet(z_k, 5,0, scale);
@@ -326,14 +332,14 @@ IplImage* draw_and_calculate( IplImage* img, Face* F, FaceGeom* G){
 
 	//CvPoint img_centre = cvPoint(cvRound(W/2),cvRound(H/2));
 	
-	pointer_2d.x = ((F->NoseBase.x + cvRound(500*(tan((double)Yaw))))*0.7) + (pointer_2d.x)*0.3;
-	pointer_2d.y = ((F->NoseBase.y + cvRound(500*(tan((double)Pitch))))*0.7) + (pointer_2d.y)*0.3;
+	pointer_2d.x = ((F->NoseBase.x + cvRound(500*(tan((double)P->yaw))))*0.7) + (pointer_2d.x)*0.3;
+	pointer_2d.y = ((F->NoseBase.y + cvRound(500*(tan((double)P->pitch))))*0.7) + (pointer_2d.y)*0.3;
 
 	///////////
-	Yaw_kalman = cvmGet(y_k, 2,0 );
-	Pitch_kalman = cvmGet(y_k, 0,0);
-	pointer_2d_kalman.x = ((F->NoseBase.x + cvRound(500*(tan((double)Yaw_kalman))))) ;
-	pointer_2d_kalman.y = ((F->NoseBase.y + cvRound(500*(tan((double)Pitch_kalman))))) ;
+	P->kyaw = cvmGet(y_k, 2,0 );
+	P->kpitch = cvmGet(y_k, 0,0);
+	pointer_2d_kalman.x = ((F->NoseBase.x + cvRound(500*(tan((double)P->kyaw))))) ;
+	pointer_2d_kalman.y = ((F->NoseBase.y + cvRound(500*(tan((double)P->kpitch))))) ;
 	/////////////////
 
 
@@ -377,14 +383,14 @@ IplImage* draw_and_calculate( IplImage* img, Face* F, FaceGeom* G){
 
 
 //1280x800
-//	mouse.x = 1280/2 - 320/2 + ((Nose_base.x + cvRound(1500*(tan((double)Yaw))))*0.7) + (mouse.x)*0.3;
-//	mouse.y = 800/2 - 240/2 + ((Nose_base.y + cvRound(1500*(tan((double)Pitch))))*0.7) + (mouse.y)*0.3;
+//	mouse.x = 1280/2 - 320/2 + ((Nose_base.x + cvRound(1500*(tan((double)P->yaw))))*0.7) + (mouse.x)*0.3;
+//	mouse.y = 800/2 - 240/2 + ((Nose_base.y + cvRound(1500*(tan((double)P->pitch))))*0.7) + (mouse.y)*0.3;
 //SetCursorPos(mouse.x, mouse.y);
 
 
 
 	//void draw_pin(IplImage* img, CvPoint3D32f normal, float slant, float tita, CvScalar colour)	
-	draw_pin(img, normal, slant, tita, CV_RGB(255,0,0));
+	draw_pin(img, normal, P->slant, tita, CV_RGB(255,0,0));
 
 	print_text(img, t, CV_RGB(255,0,0));
 /*
@@ -398,11 +404,11 @@ IplImage* draw_and_calculate( IplImage* img, Face* F, FaceGeom* G){
 	printf("Tilt		= %.3f\n",	tilt);
 	printf("symm angle	= %.3f\n",	symm);
 	printf("Tita		= %.3f\n",	tita*(180/pi));
-	printf("Slant		= %.3f\n\n",	slant*(180/pi));
+	printf("Slant		= %.3f\n\n",	P->slant*(180/pi));
 
-	printf("Roll		= %.3f\n",	Roll);
-	printf("Pitch		= %.3f\n",	Pitch*(180/pi));
-	printf("Yaw		= %.3f\n\n",	Yaw*(180/pi));
+	printf("Roll		= %.3f\n",	P->roll);
+	printf("Pitch		= %.3f\n",	P->pitch*(180/pi));
+	printf("Yaw		= %.3f\n\n",	P->yaw*(180/pi));
 
 	printf("normal.x	= %.3f\n",	normal.x);
 	printf("normal.y	= %.3f\n",	normal.y);
@@ -430,10 +436,7 @@ IplImage* draw_and_calculate( IplImage* img, Face* F, FaceGeom* G){
 		is_tracking = 0;
 	}
 
-
-	return img;
 }
-
 
 //Function to return distance between 2 points in image
 float FindDistance(CvPoint pt1, CvPoint pt2){
@@ -469,10 +472,10 @@ float FindAngle(CvPoint2D32f pt1, CvPoint2D32f pt2)
 
 
 //Function to find slant angle in image 'Gee & Cipolla'
-float Find_slant(int ln, int lf, float Rn, float tita)
+double Find_slant(int ln, int lf, float Rn, float tita)
 {
 	float dz=0;
-	float slant;
+	double slant;
 	float m1 = ((float)ln*ln)/((float)lf*lf);
 	float m2 = (cos(tita))*(cos(tita));
 

@@ -36,16 +36,35 @@ double Mean_Feature_distance;
 };
 typedef struct facegeometry FaceGeom;
 
+struct pose{
+  
+double pitch, yaw, roll;
+double slant;
+double zaxis, xaxis, yaxis;
 
-IplImage* draw_and_calculate( IplImage* img, Face* F, FaceGeom* G );
+
+//Kalman filer
+double kpitch, kyaw;
+double kpitch_pre, kyaw_pre;
+
+//float pitch[900];
+//float yaw[900];
+//float roll[900];
+  
+};
+typedef struct pose Pose;
+
+
+
+void draw_and_calculate( IplImage *img, Face *F, FaceGeom *G, Pose *P );
 float	FindDistance	(CvPoint pt1, CvPoint pt2);
 double	FindDistance2D32f	(CvPoint2D32f pt1, CvPoint2D32f pt2);
 float	FindAngle		(CvPoint2D32f pt1, CvPoint2D32f pt2);
-float	Find_slant		(int ln, int lf, float Rn, float tita);
+double	Find_slant		(int ln, int lf, float Rn, float tita);
 void 	draw_crosshair(IplImage* img, CvPoint centre, int circle_radius, int line_radius, CvScalar colour);
 void 	play_game(IplImage* img, int precision, CvPoint Position, CvScalar ball_colour);
 void 	draw_pin(IplImage* img, CvPoint3D32f normal, float slant, float tita, CvScalar colour);
-void 	init_geometric_model(Face* F,FaceGeom* G);
+void 	init_geometric_model(Face* F,FaceGeom* G, Pose *P);
 void    init_kalman_filter(void);
 void 	print_text(IplImage* img, int counter, CvScalar colour);
 void 	draw_trail(IplImage* img, CvPoint* pt);

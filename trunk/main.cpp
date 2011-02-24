@@ -35,6 +35,9 @@ Face *FPtr = &F;
 FaceGeom G;
 FaceGeom *GPtr = &G;
 
+Pose P;
+Pose *PPtr = &P;
+
 //camera resolution
 extern int W; //width
 extern int H; //height
@@ -55,19 +58,20 @@ IplImage *DisplayFrame = 0;
 int initAll();
 void exitProgram(int code);
 void captureVideoFrame();
-void equalize(IplImage *frame);
+//void equalize(IplImage *frame);
 
 int key;
 bool isFace = 0;
 
 bool CheckForFace(Face* F){
+  const double tol1=10,tol2=20;
 	//NOTE Need to write better function to make sure features are initialized when person is facing camera.
 	if (F->LeftEye.x > 0. && F->RightEye.x > 0. && F->Nose.x > 0. && F->Mouth.x > 0. ){ //check all features were initialized
 	  return(  ((F->RightEye.x - F->LeftEye.x) > ((double)F->FaceBox->width)/4.)
-		&& ((F->RightEye.x + F->LeftEye.x + F->Nose.x)/3.) > (F->Nose.x - ((double)F->NoseBox->width)/2.)
-		&& ((F->RightEye.y + F->LeftEye.y + F->Nose.y)/3.) > (F->Nose.y - ((double)F->NoseBox->height)/2.)
-		&& ((F->RightEye.x + F->LeftEye.x + F->Nose.x)/3.) < (F->Nose.x + ((double)F->NoseBox->width)/2.)
-		&& ((F->RightEye.y + F->LeftEye.y + F->Nose.y)/3.) < (F->Nose.y + ((double)F->NoseBox->height)/2.)
+		&& ((F->RightEye.x + F->LeftEye.x + F->Nose.x)/3.) > (F->Nose.x - tol1)
+		&& ((F->RightEye.y + F->LeftEye.y + F->Nose.y)/3.) > (F->Nose.y - tol2)
+		&& ((F->RightEye.x + F->LeftEye.x + F->Nose.x)/3.) < (F->Nose.x + tol1)
+		&& ((F->RightEye.y + F->LeftEye.y + F->Nose.y)/3.) < (F->Nose.y + tol2)
 	);
 	}
 	else return 0;
@@ -123,7 +127,7 @@ int main(int argc, char** argv)
 	//is_tracking	= dynamicTracker(FrameCopy, F->LeftEye, F->RightEye, F->Nose, F->Nose);
 	i=0;
 	//init_geometric_model(FPtr);
-	init_geometric_model(FPtr,GPtr);
+	init_geometric_model(FPtr,GPtr,PPtr);
 	init_kalman_filter();
 
 	while(1)
@@ -144,8 +148,7 @@ int main(int argc, char** argv)
 
 		FrameCopy = trackObject(FrameCopy, FPtr, GPtr);
 
-		FrameCopy = draw_and_calculate(FrameCopy, FPtr, GPtr);
-
+		draw_and_calculate(FrameCopy, FPtr, GPtr, PPtr);
 		//printf( "Left Eye	x=%d y=%d\n",		F.LeftEye.x, F.LeftEye.y) ;
 		//printf( "Right Eye	x=%d y=%d\n",		F.RightEye.x, F.RightEye.y) ;
 		//printf( "Nose		x=%d y=%d\n",		F.Nose.x, F.Nose.y) ;
