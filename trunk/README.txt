@@ -20,3 +20,8 @@ Contributers:
 Michael Sapienza
 Kenneth Camilleri
 Kenneth Scerri
+
+To Do:
+System will fail if not all the face features are visible from the webcam.
+Unsatisfactory performance if the lighting conditions are not favorable. 
+It currently uses an image resolution of 320x240; needs changing to work with variable camera resolution.

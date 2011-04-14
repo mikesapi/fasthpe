@@ -27,7 +27,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "pose-estimation.h"
 #include "facefeaturetrack.h"
 
-
+bool flag=0;
 
 Face F;
 Face *FPtr = &F;
@@ -64,7 +64,7 @@ int key;
 bool isFace = 0;
 
 bool CheckForFace(Face* F){
-  const double tol1=10,tol2=20;
+  const double tol1=15,tol2=25;
 	//NOTE Need to write better function to make sure features are initialized when person is facing camera.
 	if (F->LeftEye.x > 0. && F->RightEye.x > 0. && F->Nose.x > 0. && F->Mouth.x > 0. ){ //check all features were initialized
 	  return(  ((F->RightEye.x - F->LeftEye.x) > ((double)F->FaceBox->width)/4.)
@@ -157,7 +157,8 @@ int main(int argc, char** argv)
 		t = (double)cvGetTickCount() - t;//end timer
 		printf( "detection time = %gms\n\n", t/((double)cvGetTickFrequency()*1000.) );//display timem in ms
 		}
-
+		 	if (flag == 0) is_tracking=0;
+		 	flag=1;
 		cvShowImage( DISPLAY_WINDOW, FrameCopy );//show result
 
 	
