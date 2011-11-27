@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2010 Michael Sapienza
+Copyright (C) 2011 Michael Sapienza
    
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -15,8 +15,10 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+
 #include <iostream>
 #include <stdio.h>
+#include<X11/extensions/Xrandr.h> //to get screen resolution
 
 //compatible with opencv2.2
 #include <opencv2/highgui/highgui.hpp>
@@ -42,13 +44,11 @@ Pose *PPtr = &P;
 extern int W; //width
 extern int H; //height
 
+int screen_w, screen_h;
+
 extern int is_tracking;
 
 extern int frame_number;
-
-extern float pitch[900];
-extern float yaw[900];
-extern float roll[900];
 
 const char *DISPLAY_WINDOW = "DisplayWindow";
 
@@ -59,6 +59,7 @@ int initAll();
 void exitProgram(int code);
 void captureVideoFrame();
 //void equalize(IplImage *frame);
+int GetScreenSize(int&,int&);
 
 int key;
 bool isFace = 0;
@@ -89,7 +90,7 @@ int main(int argc, char** argv)
 
 	while(1)
 	{
-		for(i=0;i<2;i++){		//repeat 2 times to give person enough time to position their face in a frontal pose approx (250ms*10)
+		for(i=0;i<2;i++){		//repeat 2 times to give person enough time to position their face in a frontal pose approx (250ms*2)
 
 			captureVideoFrame();//get frame from camera
 
@@ -122,7 +123,7 @@ int main(int argc, char** argv)
 	
 	//captureVideoFrame();//get frame from camera
 
-	// initialize tracking (NOTE:try make it work with grayscale instead of colour)
+	// initialize tracking (NOTE:it may work with grayscale instead of colour)
 	is_tracking	= initTracker(FrameCopy, FPtr);
 	//is_tracking	= dynamicTracker(FrameCopy, F->LeftEye, F->RightEye, F->Nose, F->Nose);
 	i=0;
@@ -199,31 +200,32 @@ int initAll()
 
 	// Startup message tells user how to begin and how to exit
 	printf( "\n*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n"
-		"To begin, look at the camera and press 'Enter'\n\n"
-		"To manually reinitialise the system press 'r'\n\n"
-		"To exit, click inside the video display,\n"
-		"then press the ESC key\n\n\n"
-		"To play the game, hit the blue circles that\n" 
+		"*-*-*-*-Fasthpe (c) Michael Sapienza - UOM - 2009-*-*-*-*-*\n\n" 
+		"Begin -> look straight at the camera and press 'Enter'\n\n"
+		"Reinitialize -> press 'r'\n\n"
+		"Exit -> press the ESC key,\n\n\n"
+		"How to play: Hit the blue circles that\n" 
 		"appear on the screen with the green circle\n"
-		"that you can control with your head pose\n\n\n"
+		"that you can control with your head orientation\n\n\n"
 		"***WARNING***\n"
-		"--Prolonged use of this product may cause neck injuries--"
+		"--Prolonged use of this game may cause neck injuries--"
 		"\n*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
 	fgetc(stdin);
 
+	//int width, height;
+	GetScreenSize( screen_w, screen_h);
+// 	printf("Screen resolution: %d x %d\n",width, height);
+// 	fgetc(stdin);
 	// Create the display window
 	cvNamedWindow( DISPLAY_WINDOW, 1 );
-	//cvMoveWindow ( DISPLAY_WINDOW, cvRound(1920/2)-cvRound(W/2),	20);
-	cvMoveWindow ( DISPLAY_WINDOW, cvRound(1280/2)-cvRound(W/2),	20);
+	cvMoveWindow ( DISPLAY_WINDOW, cvRound(screen_w/2)-cvRound(W/2),	20);
 
 	return 1;
 }
 
 
-// exit Program
 void exitProgram(int code)
 {
-	//printResults(roll, yaw, pitch);
 
 	// Release resources allocated in this file
 	cvDestroyWindow( DISPLAY_WINDOW );
@@ -247,23 +249,15 @@ void captureVideoFrame()
 	if( !frame ){
 		exitProgram(-1);
 	}
-	// Copy it to the display image, inverting it if needed
+
 	if( !FrameCopy )
-	//FrameCopy = cvCreateImage( cvGetSize(frame), 8, 3 );
-	//DisplayFrame = cvCreateImage( cvGetSize(frame), 8, 3 );
-	FrameCopy = cvCreateImage( cvSize(320,240), 8, 3 );
-	DisplayFrame = cvCreateImage( cvSize(320,240), 8, 3 );
-	cvResize(frame, FrameCopy);
-	//cvCopy( frame, FrameCopy, 0 );
-	//cvFlip( frame, FrameCopy, 1);
+	FrameCopy = cvCreateImage( cvGetSize(frame), 8, 3 );
+	DisplayFrame = cvCreateImage( cvGetSize(frame), 8, 3 );
+
+	cvCopy(frame, FrameCopy);
+
 	cvFlip( FrameCopy, FrameCopy, 1);
-	FrameCopy->origin = frame->origin;
 	cvCopy(FrameCopy, DisplayFrame, 0);
-	if( 1 == FrameCopy->origin ) // 1 means the image is inverted
-	{
-		//cvFlip( FrameCopy, 0, 0 );
-		FrameCopy->origin = 0;
-	}
 
 	//equalize(FrameCopy);
 }
@@ -300,3 +294,28 @@ cvReleaseImage( &green_e );
 cvReleaseImage( &red_e );
 }
 */
+
+//http://www.blitzbasic.com/Community/posts.php?topic=86911
+int GetScreenSize(int& width, int& height)
+{
+
+ 		int num_sizes;
+ 		Rotation original_rotation;
+
+ 		Display *dpy = XOpenDisplay(NULL);
+ 		Window root = RootWindow(dpy, 0);
+ 		XRRScreenSize *xrrs = XRRSizes(dpy, 0, &num_sizes);
+ 		//
+ 		//     GET CURRENT RESOLUTION AND FREQUENCY
+ 		//
+ 		XRRScreenConfiguration *conf = XRRGetScreenInfo(dpy, root);
+ 		short original_rate = XRRConfigCurrentRate(conf);
+ 		SizeID original_size_id = XRRConfigCurrentConfiguration(conf, &original_rotation);
+
+  		width = xrrs[original_size_id].width;
+  		height = xrrs[original_size_id].height;
+ 
+ 		XCloseDisplay(dpy);
+		return 0;    //Return a value that can be used for error checking. 
+  
+}

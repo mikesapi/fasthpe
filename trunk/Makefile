@@ -1,6 +1,6 @@
 CC = g++
 
-CFLAGS = -c -g -Wall -I/usr/local/include/opencv -I/usr/local/include
+CFLAGS = -g -Wall -I/usr/local/include/opencv -I/usr/local/include
 #CFLAGS = -c -g -Wall $(shell pkg-config opencv --cflags)
 
 #OPENCV<2.1#LDFLAGS = -L/usr/local/lib -lcxcore -lcv -lhighgui -lcvaux -lml
@@ -10,7 +10,7 @@ LDFLAGS = -L/usr/local/lib -lopencv_core -lopencv_imgproc -lopencv_calib3d -lope
 
 SOURCES = main.cpp facefeaturedetect.cpp facefeaturetrack.cpp pose-estimation.cpp capture.cpp 
 OBJECTS = $(SOURCES:.c=.o)
-TARGET = openhpe
+TARGET = fasthpe
 
 all: $(TARGET)
 
@@ -22,7 +22,3 @@ $(TARGET): $(OBJECTS)
 
 clean:
 	rm -rf *.o $(TARGET)
-
-#Notes
-#g++ `pkg-config opencv --cflags --libs` source_name.c -o source_name
-# -I../../include -I/usr/include/flycapture

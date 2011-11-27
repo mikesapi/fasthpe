@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2010 Michael Sapienza
+Copyright (C) 2011 Michael Sapienza
    
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -378,7 +378,7 @@ void draw_and_calculate( IplImage *img, Face *F, FaceGeom *G, Pose *P){
 	play_game(img, 8, pointer_2d_kalman, CV_RGB(0,0,200));
 
 	//void draw_trail(IplImage* img, CvPoint pt)
-	draw_trail(img, &pointer_2d_kalman);
+	//draw_trail(img, &pointer_2d_kalman);
 	
 
 

@@ -1,27 +1,71 @@
+#######################
+General Information
+#######################
+
 Implementation of the Head Pose Estimation algorithm as described in:
+M. Sapienza and K.P. Camilleri, “Fasthpe: A recipe for quick head pose estimation,” 
+Department of Systems & Control Engineering, University of Malta,” Technical Report, 2011.
 
-M. Sapienza. Real-time head pose estimation in the 6 degrees of freedom. 
-Undergraduate thesis, University of Malta, 2009.
+Available for download at: https://sites.google.com/site/mikesapi/research
 
-This software was developed by Michael Sapienza within the department of 'Systems & Control Engineering (SCE)' at the University of Malta under the supervision of Prof. Kenneth Camilleri.
+This software was developed as part of an undergraduate thesis 
+within the department of 'Systems & Control Engineering (SCE)' 
+at the University of Malta.
+
+Any questions about the code/dissertation can be sent to mikesapi AT gmail DOT com.
 
 
 
-What to do to run this software (under Linux):
-1) Install the OPENCV Library.
+#########################
+How to use (Ubuntu Linux)
+#########################
+Note: this software is able to run on Windows and Mac with minor tweaks.
+
+1) Install the OPENCV Library (version 2.2 +)
+2. Install SoX sound processing software to play sounds in ubuntu: "sudo apt-get install sox")
 2) Connect your webcam.
 3) Open a terminal and navigate to the directory containing the code.
-3) Type "make" to compile "Head_Pose_Estimation".
-4) To run type "./Head_Pose_Estimation".
+3) Type "make" to compile "fasthpe".
+4) To run type "./fasthpe".
 
 
 
-Contributers:
+######################
+How to cite
+######################
+
+@techreport{sapienza-2011,
+  author       = "Michael Sapienza and Kenneth P. Camilleri",
+  title        = "Fasthpe: A recipe for quick head pose estimation",
+  type	       = "Technical Report",
+  institution  = "Department of Systems \& Control Engineering, University of Malta",
+  year 	       = "2011"
+}
+
+
+
+#########################
+List of Contributers
+#########################
 Michael Sapienza
 Kenneth Camilleri
 Kenneth Scerri
 
-To Do:
+
+
+#########################
+ToDo
+#########################
 System will fail if not all the face features are visible from the webcam.
+
 Unsatisfactory performance if the lighting conditions are not favorable. 
+
 It currently uses an image resolution of 320x240; needs changing to work with variable camera resolution.
+
+"As one suggestion, since these algorithms usually have some parameters
+to tweak, i believe it is a good policy to include a small dataset
+(maybe the video you used) where the default parameters work, so
+people can see that it works and then tweak the params to their data,
+rather than trying to run on their video and seeing that it doesn't
+work (i didn't run the code yet, just mentioning something that
+usually happens)" - Ricardo Silveira CabralPedro 

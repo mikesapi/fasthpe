@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2010 Michael Sapienza
+Copyright (C) 2011 Michael Sapienza
    
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //camera resolution
 extern int W;
 extern int H;
+extern int screen_w;
 
 #define  EYE_TPL_WIDTH		 12			// eye template width   
 #define  EYE_TPL_HEIGHT      	 10			// eye template height      
@@ -392,7 +393,7 @@ const int plus = -5;
 
 
 	//init_window;
-	int screen_w = 1280;
+	//int screen_w = 1280;
 	sprintf ( & ( window_name[0][0] ), "Left_Eye" );
 	sprintf ( & ( window_name[1][0] ), "Right_Eye" );
 	sprintf ( & ( window_name[2][0] ), "Nose" );
