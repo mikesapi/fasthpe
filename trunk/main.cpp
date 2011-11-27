@@ -55,7 +55,7 @@ const char *DISPLAY_WINDOW = "DisplayWindow";
 IplImage *FrameCopy = 0;
 IplImage *DisplayFrame = 0;
 
-int initAll();
+int initAll(int argc, char** argv);
 void exitProgram(int code);
 void captureVideoFrame();
 //void equalize(IplImage *frame);
@@ -85,7 +85,7 @@ int main(int argc, char** argv)
 {
 	int i;
 	
-	if( !initAll() ) exitProgram(-1);
+	if( !initAll(argc, argv) ) exitProgram(-1);
 	while(1){
 
 	while(1)
@@ -182,22 +182,12 @@ exitProgram(0);
 }
 
 
-int initAll()
+int initAll(int argc, char** argv)
 {
-	if( !initCapture() ) return 0;
-	
-	//if( !initVideoCapture() ) return 0;
-
-	if( !initFaceDet(	
-						
-	"haarcascades/haarcascade_frontalface_alt2.xml",
-	"haarcascades/Nariz_nuevo_20stages.xml",
-	//"haarcascades/haarcascade_eye_tree_eyeglasses.xml",
-	"haarcascades/haarcascade_eye.xml",
-	"haarcascades/mouth.xml"))
-	  
-	return 0;
-
+  
+  if (argc < 2){
+    if( !initCapture() ) return 0;
+    
 	// Startup message tells user how to begin and how to exit
 	printf( "\n*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n"
 		"*-*-*-*-Fasthpe (c) Michael Sapienza - UOM - 2009-*-*-*-*-*\n\n" 
@@ -211,6 +201,27 @@ int initAll()
 		"--Prolonged use of this game may cause neck injuries--"
 		"\n*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
 	fgetc(stdin);
+    
+  }else{
+/*     int i;
+     printf("argc = %d\n", argc);
+ 
+     for (i = 0; i<argc; i++){
+          printf("argv[%d] = %s\n", i, argv[i]);
+     } */   
+	if( !initVideoCapture(argv[1]) ) return 0;
+  }
+
+
+	if( !initFaceDet(	
+						
+	"haarcascades/haarcascade_frontalface_alt2.xml",
+	"haarcascades/Nariz_nuevo_20stages.xml",
+	//"haarcascades/haarcascade_eye_tree_eyeglasses.xml",
+	"haarcascades/haarcascade_eye.xml",
+	"haarcascades/mouth.xml"))
+	  
+	return 0;
 
 	//int width, height;
 	GetScreenSize( screen_w, screen_h);

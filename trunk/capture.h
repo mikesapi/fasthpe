@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef CAPTURE_H
 #define CAPTURE_H
 
-int initVideoCapture();
+int initVideoCapture(char * video_path);
 int initCapture();
 void closeCapture();
 IplImage *nextFrame();

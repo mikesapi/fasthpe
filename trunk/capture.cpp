@@ -16,10 +16,11 @@ int frame_number = 1;
 //CvVideoWriter *writer;
 
 //Initialize capture from avi
-int initVideoCapture()
+int initVideoCapture(char* video_path)
 {
 
-capture = cvCreateFileCapture("ssm8.avi");
+
+	capture = cvCreateFileCapture(video_path);
 
 	frames = (int) cvGetCaptureProperty(
 		capture,

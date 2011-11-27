@@ -22,11 +22,12 @@ How to use (Ubuntu Linux)
 Note: this software is able to run on Windows and Mac with minor tweaks.
 
 1) Install the OPENCV Library (version 2.2 +)
-2. Install SoX sound processing software to play sounds in ubuntu: "sudo apt-get install sox")
-2) Connect your webcam.
+2) Install SoX sound processing software to play sounds in ubuntu: "sudo apt-get install sox")
 3) Open a terminal and navigate to the directory containing the code.
-3) Type "make" to compile "fasthpe".
-4) To run type "./fasthpe".
+4) Type "make" to compile "fasthpe".
+
+1) To run fasthpe on sample video file type "./fasthpe videos/ssm9.mpg".
+2) To play game yourself from webcam stream just type "./fasthpe"
 
 
 
@@ -45,7 +46,7 @@ How to cite
 
 
 #########################
-List of Contributers
+List of Contributors
 #########################
 Michael Sapienza
 Kenneth Camilleri
@@ -58,7 +59,7 @@ ToDo
 #########################
 System will fail if not all the face features are visible from the webcam.
 
-Unsatisfactory performance if the lighting conditions are not favorable. 
+Unsatisfactory performance if the lighting conditions are not favourable. 
 
 It currently uses an image resolution of 320x240; needs changing to work with variable camera resolution.
 

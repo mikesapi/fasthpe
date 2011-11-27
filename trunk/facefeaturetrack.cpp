@@ -111,7 +111,7 @@ Feature * LeftEyePtr = &LeftEye;
 Feature RightEye;
 Feature * RightEyePtr = &RightEye;
 
-static char window_name[12][255] = {{NULL},{NULL}};
+static char window_name[12][255] = {{0},{0}};
 
 
 // Function to free memory when program terminates
