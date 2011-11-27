@@ -6,11 +6,14 @@ Implementation of the Head Pose Estimation algorithm as described in:
 M. Sapienza and K.P. Camilleri, “Fasthpe: A recipe for quick head pose estimation,” 
 Department of Systems & Control Engineering, University of Malta,” Technical Report, 2011.
 
-Available for download at: https://sites.google.com/site/mikesapi/research
+and as seen in the YouTube video:
+http://www.youtube.com/watch?v=6MfKMT-tfMs
+
+The code is available for download at: https://sites.google.com/site/mikesapi/research
 
 This software was developed as part of an undergraduate thesis 
 within the department of 'Systems & Control Engineering (SCE)' 
-at the University of Malta.
+at the University of Malta in 2008-2009.
 
 Any questions about the code/dissertation can be sent to mikesapi AT gmail DOT com.
 
@@ -62,11 +65,3 @@ System will fail if not all the face features are visible from the webcam.
 Unsatisfactory performance if the lighting conditions are not favourable. 
 
 It currently uses an image resolution of 320x240; needs changing to work with variable camera resolution.
-
-"As one suggestion, since these algorithms usually have some parameters
-to tweak, i believe it is a good policy to include a small dataset
-(maybe the video you used) where the default parameters work, so
-people can see that it works and then tweak the params to their data,
-rather than trying to run on their video and seeing that it doesn't
-work (i didn't run the code yet, just mentioning something that
-usually happens)" - Ricardo Silveira CabralPedro 
