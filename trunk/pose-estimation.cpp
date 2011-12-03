@@ -360,14 +360,14 @@ void draw_and_calculate( IplImage *img, Face *F, FaceGeom *G, Pose *P){
 	draw_crosshair(img, pointer_2d_kalman, 7, 12, CV_RGB(255,0,0));
       
 	//draw covariance error ellipse
-	printf("after  cvKalmanCorrect: kalman->error_cov_pre(2x2)  %1.6f %1.6f %1.6f %1.6f\n ", kalman->error_cov_pre->data.fl[0], kalman->error_cov_pre->data.fl[1],kalman->error_cov_pre->data.fl[2], kalman->error_cov_pre->data.fl[3]);
-	printf("after  cvKalmanCorrect: kalman->error_cov_pre(2x2)  %1.6f %1.6f %1.6f %1.6f\n ", kalman->error_cov_pre->data.fl[4], kalman->error_cov_pre->data.fl[5],kalman->error_cov_pre->data.fl[6], kalman->error_cov_pre->data.fl[7]);
-	printf("after  cvKalmanCorrect: kalman->error_cov_pre(2x2)  %1.6f %1.6f %1.6f %1.6f\n ", kalman->error_cov_pre->data.fl[8], kalman->error_cov_pre->data.fl[9],kalman->error_cov_pre->data.fl[10], kalman->error_cov_pre->data.fl[11]);
-	printf("after  cvKalmanCorrect: kalman->error_cov_pre(2x2)  %1.6f %1.6f %1.6f %1.6f\n ", kalman->error_cov_pre->data.fl[12], kalman->error_cov_pre->data.fl[13],kalman->error_cov_pre->data.fl[14], kalman->error_cov_pre->data.fl[15]);
+	//printf("after  cvKalmanCorrect: kalman->error_cov_pre(2x2)  %1.6f %1.6f %1.6f %1.6f\n ", kalman->error_cov_pre->data.fl[0], kalman->error_cov_pre->data.fl[1],kalman->error_cov_pre->data.fl[2], kalman->error_cov_pre->data.fl[3]);
+	//printf("after  cvKalmanCorrect: kalman->error_cov_pre(2x2)  %1.6f %1.6f %1.6f %1.6f\n ", kalman->error_cov_pre->data.fl[4], kalman->error_cov_pre->data.fl[5],kalman->error_cov_pre->data.fl[6], kalman->error_cov_pre->data.fl[7]);
+	//printf("after  cvKalmanCorrect: kalman->error_cov_pre(2x2)  %1.6f %1.6f %1.6f %1.6f\n ", kalman->error_cov_pre->data.fl[8], kalman->error_cov_pre->data.fl[9],kalman->error_cov_pre->data.fl[10], kalman->error_cov_pre->data.fl[11]);
+	//printf("after  cvKalmanCorrect: kalman->error_cov_pre(2x2)  %1.6f %1.6f %1.6f %1.6f\n ", kalman->error_cov_pre->data.fl[12], kalman->error_cov_pre->data.fl[13],kalman->error_cov_pre->data.fl[14], kalman->error_cov_pre->data.fl[15]);
 
 	double muX = 2*sqrt(kalman->error_cov_post->data.fl[0]);
         double muY = 2*sqrt(kalman->error_cov_post->data.fl[10]);
-	printf("                                                     %1.5f %1.5f\n",  muX, muY);
+	//printf("                                                     %1.5f %1.5f\n",  muX, muY);
 
         static int theta_ellipse = 0;
         cvEllipse( img, pointer_2d_kalman, cvSize( muX , muY ), theta_ellipse, 0, 360, CV_RGB(0,255,0),1);

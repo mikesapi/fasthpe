@@ -29,7 +29,7 @@ Prerequisites:
 - Install SoX sound processing software to play sounds in ubuntu: "sudo apt-get install sox" (Only necessary for gunshot sound in game)
 
 Install:
-1) Unpack code: $ unzip fasthpe-0.1.zip -d /yourpath/'
+1) Unpack code.
 2) Open a terminal and navigate to the directory containing the code.
 3) Type "make" to compile "fasthpe".
 4) To run fasthpe on sample video file type "./fasthpe videos/ssm9.mpg".
@@ -39,7 +39,7 @@ Example:
 Open Terminal: CTRL+ALT t
 ~$ cd ~/Downloads
 ~$ unzip fasthpe-0.1.zip -d ~/your/path/
-~$ cd ~/your/path/fasthpe
+~$ cd ~/your/path/fasthpe-0.1
 ~$ make
 ~$ ./fasthpe videos/ssm9.mpg
 

@@ -100,7 +100,7 @@ int main(int argc, char** argv)
 
 			t = (double)cvGetTickCount() - t;//end timer
 			
-			//printf( "detection time = %gms\n", t/((double)cvGetTickFrequency()*1000.) );//display timem in ms
+			printf( "detection time = %gms\n", t/((double)cvGetTickFrequency()*1000.) );//display timem in ms
 
 			//printf( "Left Eye x=%d y=%d\n", F.LeftEye.x, F.LeftEye.y) ;
 			//printf( "Right Eye x=%d y=%d\n", F.RightEye.x, F.RightEye.y) ;
@@ -156,7 +156,7 @@ int main(int argc, char** argv)
 		//printf( "Mouth	x=%d y=%d\n\n",		F.Nose.x, F.Nose.y) ;
 
 		t = (double)cvGetTickCount() - t;//end timer
-		printf( "detection time = %gms\n\n", t/((double)cvGetTickFrequency()*1000.) );//display timem in ms
+		printf( "tracking+pose+kalman time = %gms\n\n", t/((double)cvGetTickFrequency()*1000.) );//display timem in ms
 		}
 		 	if (flag == 0) is_tracking=0;
 		 	flag=1;
