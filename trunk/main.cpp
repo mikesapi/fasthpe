@@ -61,7 +61,7 @@ void captureVideoFrame();
 //void equalize(IplImage *frame);
 int GetScreenSize(int&,int&);
 
-int key;
+int key, delay;
 bool isFace = 0;
 
 bool CheckForFace(Face* F){
@@ -110,7 +110,7 @@ int main(int argc, char** argv)
 			cvShowImage(DISPLAY_WINDOW, DisplayFrame );//show result
 			
 			cvReleaseImage( &DisplayFrame);
-			key = cvWaitKey( 10 );
+			key = cvWaitKey( delay );
 			if(key == 1048689 || key == 1048603 || key == 'q' )  exitProgram(0);//if user presses Esc or q , exit program
 		}
 		
@@ -167,7 +167,7 @@ int main(int argc, char** argv)
 		
 		cvReleaseImage( &FrameCopy );
 		cvReleaseImage( &DisplayFrame);
-		key = cvWaitKey( 10 );
+		key = cvWaitKey( delay );
 		
 		if(key == 1048689 || key == 1048603 || key == 'q')  exitProgram(0);//if user presses Esc or q , exit program
 		if(key == 1048690 || key == 'r') is_tracking = 0;//manual reinitialization press 'r'
@@ -187,7 +187,7 @@ int initAll(int argc, char** argv)
   
   if (argc < 2){
     if( !initCapture() ) return 0;
-    
+	delay = 10;
 	// Startup message tells user how to begin and how to exit
 	printf( "\n*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n"
 		"*-*-*-*-Fasthpe (c) Michael Sapienza - UOM - 2009-*-*-*-*-*\n\n" 
@@ -203,6 +203,7 @@ int initAll(int argc, char** argv)
 	fgetc(stdin);
     
   }else{
+    delay=30;
 /*     int i;
      printf("argc = %d\n", argc);
  
