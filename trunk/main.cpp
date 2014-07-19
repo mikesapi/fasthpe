@@ -23,7 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //compatible with opencv2.2
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc_c.h>
-#include "cv.h"
+//#include "cv.h"
 
 #include "capture.h"
 #include "facefeaturedetect.h"

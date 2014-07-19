@@ -1,6 +1,6 @@
 CC = g++
 
-CFLAGS = -g -Wall -I/usr/local/include/opencv -I/usr/local/include
+CFLAGS = -c -g -Wall -I/usr/local/include/opencv -I/usr/local/include
 #CFLAGS = -c -g -Wall $(shell pkg-config opencv --cflags)
 
 #OPENCV<2.1#LDFLAGS = -L/usr/local/lib -lcxcore -lcv -lhighgui -lcvaux -lml
