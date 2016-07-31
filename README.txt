@@ -1,3 +1,17 @@
+Fast head pose estimation or fasthpe is a computer game written in c that allows
+a user to shoot blue circles that appear on the screen with their head orientation alone. 
+The game is completely automatic and requires no special hardware or devices.
+It can be played on any computer/laptop with a webcam.
+
+Fasthpe brings together a number of simple computer vision techniques to allow the automatic initialization,
+tracking and pose estimation of a human face. 
+The result is a real-time (2ms) head orientation estimation algorithm,
+details of which can be found in the fasthpe technical report.
+
+This software was developed as part of an undergraduate thesis within the department
+of Systems & Control Engineering (SCE) at the University of Malta in 2009.
+
+
 #######################
 General Information
 #######################
@@ -9,14 +23,9 @@ Department of Systems & Control Engineering, University of Malta,” Technical R
 and as seen in the YouTube video:
 http://www.youtube.com/watch?v=6MfKMT-tfMs
 
-The code is available for download at: https://sites.google.com/site/mikesapi/research
-
 This software was developed as part of an undergraduate thesis 
 within the department of 'Systems & Control Engineering (SCE)' 
 at the University of Malta in 2008-2009.
-
-Any questions about the code/dissertation can be sent to mikesapi AT gmail DOT com.
-
 
 
 #########################
