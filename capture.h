@@ -18,6 +18,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef CAPTURE_H
 #define CAPTURE_H
 
+#include <opencv2/core/types_c.h>
+#include <opencv2/videoio/videoio_c.h>
+
 int initVideoCapture(char * video_path);
 int initCapture();
 void closeCapture();

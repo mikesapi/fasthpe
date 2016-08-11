@@ -26,16 +26,7 @@ int initVideoCapture(char* video_path)
 		capture,
 		CV_CAP_PROP_FRAME_COUNT
 		);
-	double fps = cvGetCaptureProperty(
-			capture,
-			CV_CAP_PROP_FPS);
-	CvSize size = cvSize(
-		(int)cvGetCaptureProperty( capture, CV_CAP_PROP_FRAME_WIDTH),
-		(int)cvGetCaptureProperty( capture, CV_CAP_PROP_FRAME_HEIGHT)
-		);
-	int isColor = 1;
-	
-	
+  
 // 	writer = cvCreateVideoWriter(
 // 		"my_video.avi",
 // 		CV_FOURCC('P','I','M','1'),

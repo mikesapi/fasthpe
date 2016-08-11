@@ -21,7 +21,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include<X11/extensions/Xrandr.h> //to get screen resolution
 
 //compatible with opencv2.2
-#include <opencv2/highgui/highgui.hpp>
+//#include <opencv2/opencv.hpp>
+#include <opencv2/highgui/highgui_c.h>
 #include <opencv2/imgproc/imgproc_c.h>
 //#include "cv.h"
 
@@ -322,7 +323,6 @@ int GetScreenSize(int& width, int& height)
  		//     GET CURRENT RESOLUTION AND FREQUENCY
  		//
  		XRRScreenConfiguration *conf = XRRGetScreenInfo(dpy, root);
- 		short original_rate = XRRConfigCurrentRate(conf);
  		SizeID original_size_id = XRRConfigCurrentConfiguration(conf, &original_rotation);
 
   		width = xrrs[original_size_id].width;

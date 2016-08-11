@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <stdio.h>
 
-#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/highgui/highgui_c.h>
 #include <opencv2/imgproc/imgproc_c.h>
 
 #include "facefeaturedetect.h"
@@ -152,8 +152,8 @@ void closeTemplateMatch()
 void match_feature(IplImage * frame, Feature * f, const int W, const int H, int METHOD)
 {
 
-double minval_2 = 0;
-double maxval_2 = 0;
+//double minval_2 = 0;
+//double maxval_2 = 0;
 
 CvPoint	minloc_2;
 CvPoint	maxloc_2;
@@ -472,8 +472,6 @@ IplImage* trackObject( IplImage* frame, Face* F, FaceGeom* G)
 {
 
 
- int flag = 0;
-
 /*if (i<200){
 
 	C_leye = (C_leye + L_minval)/2;
@@ -549,12 +547,10 @@ IplImage* trackObject( IplImage* frame, Face* F, FaceGeom* G)
 	 || (F->Nose.y < F->MidEyes.y )
 	 || (F->Nose.y > F->Mouth.y )	
 	 ){
-	//flag = 1;
 		Nose.win_x0 =	F->NoseBase.x - NOSE_WINDOW_WIDTH/2;
 		Nose.win_y0 =	F->NoseBase.y - NOSE_WINDOW_HEIGHT/2;
 	}
 	else{
-		//flag = 0;
 	Nose.win_x0 = Nose.x0 - ( ( NOSE_WINDOW_WIDTH  - NOSE_TPL_WIDTH  ) / 2 );
 	Nose.win_y0 = Nose.y0 - ( ( NOSE_WINDOW_HEIGHT - NOSE_TPL_HEIGHT ) / 2 );
 	
@@ -568,17 +564,14 @@ IplImage* trackObject( IplImage* frame, Face* F, FaceGeom* G)
 	 || (F->Mouth.y < F->Nose.y + 5 )
 	 ){
 
-		flag = 1;
 	Mouth.win_x0 = F->MidEyes.x - MOUTH_WINDOW_WIDTH/2;
 	Mouth.win_y0 = F->MidEyes.y + 2*(F->Nose.y - F->MidEyes.y) - MOUTH_WINDOW_HEIGHT/2;
 	}
 	else{
-		flag = 0;
 	Mouth.win_x0 = Mouth.x0 - ( ( MOUTH_WINDOW_WIDTH  - MOUTH_TPL_WIDTH  ) / 2 );
 	Mouth.win_y0 = Mouth.y0 - ( ( MOUTH_WINDOW_HEIGHT - MOUTH_TPL_HEIGHT ) / 2 );
 
 	}
-	//printf("flag = %d\n", flag);
 
 
 
@@ -692,8 +685,9 @@ match_feature(frame, NosePtr, NOSE_WINDOW_WIDTH, NOSE_WINDOW_HEIGHT, Nose.MATCH_
 match_feature(frame, MouthPtr, MOUTH_WINDOW_WIDTH, MOUTH_WINDOW_HEIGHT, Mouth.MATCH_METHOD);
 
 
-    if( (LeftEye.minval <= TH_EYE && LeftEye.MATCH_METHOD == CV_TM_SQDIFF_NORMED) ||  (LeftEye.maxval >= TH_EYE && LeftEye.MATCH_METHOD == CV_TM_CCOEFF_NORMED || LeftEye.MATCH_METHOD ==
-CV_TM_CCORR_NORMED) ) {
+    if( (LeftEye.minval <= TH_EYE && LeftEye.MATCH_METHOD == CV_TM_SQDIFF_NORMED)
+    ||  (LeftEye.maxval >= TH_EYE && ((LeftEye.MATCH_METHOD == CV_TM_CCOEFF_NORMED) || LeftEye.MATCH_METHOD == CV_TM_CCORR_NORMED))
+    ) {
 
     update_and_draw(frame, LeftEyePtr, &F->LeftEye, EYE_TPL_WIDTH, EYE_TPL_HEIGHT, LeftEye.MATCH_METHOD);
 
@@ -702,8 +696,9 @@ CV_TM_CCORR_NORMED) ) {
         is_tracking = 0;
     }
 
-    if( (RightEye.minval <= TH_EYE && RightEye.MATCH_METHOD == CV_TM_SQDIFF_NORMED) ||  (RightEye.maxval >= TH_EYE && RightEye.MATCH_METHOD == CV_TM_CCOEFF_NORMED || RightEye.MATCH_METHOD ==
-CV_TM_CCORR_NORMED) ) {
+    if( (RightEye.minval <= TH_EYE && RightEye.MATCH_METHOD == CV_TM_SQDIFF_NORMED)
+    ||  (RightEye.maxval >= TH_EYE && ((RightEye.MATCH_METHOD == CV_TM_CCOEFF_NORMED)  ||  (RightEye.MATCH_METHOD == CV_TM_CCORR_NORMED)))
+    ) {
 
     //void update_and_draw(IplImage * frame, Feature * f, CvPoint feature_center,const int W, const int H)
     update_and_draw(frame, RightEyePtr, &F->RightEye, EYE_TPL_WIDTH, EYE_TPL_HEIGHT, RightEye.MATCH_METHOD);
@@ -713,7 +708,9 @@ CV_TM_CCORR_NORMED) ) {
     }
 
 
-    if( (Nose.minval <= TH_EYE && Nose.MATCH_METHOD == CV_TM_SQDIFF_NORMED) ||  (Nose.maxval >= TH_EYE && Nose.MATCH_METHOD == CV_TM_CCOEFF_NORMED || Nose.MATCH_METHOD == CV_TM_CCORR_NORMED) ) {
+    if( (Nose.minval <= TH_EYE && Nose.MATCH_METHOD == CV_TM_SQDIFF_NORMED)
+    ||  (Nose.maxval >= TH_EYE && ((Nose.MATCH_METHOD == CV_TM_CCOEFF_NORMED)  ||  (Nose.MATCH_METHOD == CV_TM_CCORR_NORMED)))
+    ) {
     //void update_and_draw(IplImage * frame, Feature * f, CvPoint feature_center,const int W, const int H)
     update_and_draw(frame, NosePtr, &F->Nose, NOSE_TPL_WIDTH, NOSE_TPL_HEIGHT, Nose.MATCH_METHOD);
 
@@ -723,7 +720,9 @@ CV_TM_CCORR_NORMED) ) {
     }
 
 
-    if( (Mouth.minval <= TH_EYE && Mouth.MATCH_METHOD == CV_TM_SQDIFF_NORMED) ||  (Mouth.maxval >= TH_EYE && Mouth.MATCH_METHOD == CV_TM_CCOEFF_NORMED || Mouth.MATCH_METHOD == CV_TM_CCORR_NORMED) ) {
+    if( (Mouth.minval <= TH_EYE && Mouth.MATCH_METHOD == CV_TM_SQDIFF_NORMED)
+    ||  (Mouth.maxval >= TH_EYE && (Mouth.MATCH_METHOD == CV_TM_CCOEFF_NORMED || Mouth.MATCH_METHOD == CV_TM_CCORR_NORMED))
+    ) {
     //void update_and_draw(IplImage * frame, Feature * f, CvPoint feature_center,const int W, const int H)
     update_and_draw(frame, MouthPtr, &F->Mouth, MOUTH_TPL_WIDTH, MOUTH_TPL_HEIGHT, Mouth.MATCH_METHOD);
 

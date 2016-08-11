@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc_c.h>
-#include <opencv2/objdetect/objdetect.hpp>
+#include <opencv2/objdetect/objdetect_c.h>
 
 #include "facefeaturedetect.h"
 

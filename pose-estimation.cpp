@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <stdlib.h>
 #include <iostream>
 
-#include <opencv2/video/tracking.hpp>
+#include <opencv2/video/tracking_c.h>
 #include <opencv2/legacy/compat.hpp>
 #include <opencv2/imgproc/imgproc_c.h>
 
@@ -415,10 +415,10 @@ void draw_and_calculate( IplImage *img, Face *F, FaceGeom *G, Pose *P){
 	printf("normal.z	= %.3f\n\n",	normal.z);
 */
 	//determine tracking failure
-	if(G->LeftEye_RightEye_distance > G->init_LeftEye_RightEye_distance*1.4
+	if((G->LeftEye_RightEye_distance > G->init_LeftEye_RightEye_distance*1.4
 	&& G->LeftEye_Nose_distance 	> G->init_LeftEye_Nose_distance*1.4
 	&& G->RightEye_Nose_distance 	> G->init_RightEye_Nose_distance*1.4
-	&& G->Nose_Mouth_distance 	> G->init_Nose_Mouth_distance*2
+	&& G->Nose_Mouth_distance 	> G->init_Nose_Mouth_distance*2)
 
 	|| 
 	(G->LeftEye_RightEye_distance 	< G->init_LeftEye_RightEye_distance*0.7
