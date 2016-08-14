@@ -543,6 +543,7 @@ void play_game(IplImage* img, int precision, CvPoint Position, CvScalar ball_col
 	//PlaySound(L"c://magnum.wav", NULL, SND_FILENAME | SND_ASYNC);
 	//QSound::play("mysounds/bells.wav");
 	int status = system("play sounds/44magnum.wav &");
+  if(status < 0) std::cout << "Warning: something wrong with playing of sound";
 	}
 	}
 	cvCircle(img, rand_coord, 5, ball_colour, 6, 4, 0);
