@@ -1,3 +1,3 @@
 #!/bin/bash
-cd /home/mikesapi/Code/fasthpe
+cd ~/code/fasthpe
 ./fasthpe

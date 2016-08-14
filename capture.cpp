@@ -1,8 +1,9 @@
+#include "capture.h"
+
 #include <stdio.h>
 
-#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/highgui.hpp>
 
-#include "capture.h"
 
 int frames;
 

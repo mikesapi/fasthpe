@@ -18,6 +18,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef POSE_ESTIMATION_H
 #define POSE_ESTIMATION_H
 
+#include <opencv2/core.hpp>
+
+typedef struct facefeatures Face;
+
 struct facegeometry{
   
 double LeftEye_Nose_distance;

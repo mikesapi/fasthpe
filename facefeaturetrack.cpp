@@ -15,15 +15,14 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <stdio.h>
-
-#include <opencv2/highgui/highgui_c.h>
-#include <opencv2/imgproc/imgproc_c.h>
-
+#include "facefeaturetrack.h"
 #include "facefeaturedetect.h"
 #include "pose-estimation.h"
-#include "facefeaturetrack.h"
 
+#include <stdio.h>
+
+#include <opencv2/legacy/legacy.hpp>
+#include <opencv2/highgui.hpp>
 
 //camera resolution
 extern int W;
@@ -155,8 +154,8 @@ void match_feature(IplImage * frame, Feature * f, const int W, const int H, int 
 //double minval_2 = 0;
 //double maxval_2 = 0;
 
-CvPoint	minloc_2;
-CvPoint	maxloc_2;
+//CvPoint	minloc_2;
+//CvPoint	maxloc_2;
 
     cvSetImageROI( frame, 
                    cvRect( f->win_x0, 

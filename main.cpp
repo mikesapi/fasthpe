@@ -15,21 +15,16 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
-#include <iostream>
-#include <stdio.h>
-#include<X11/extensions/Xrandr.h> //to get screen resolution
-
-//compatible with opencv2.2
-//#include <opencv2/opencv.hpp>
-#include <opencv2/highgui/highgui_c.h>
-#include <opencv2/imgproc/imgproc_c.h>
-//#include "cv.h"
-
 #include "capture.h"
 #include "facefeaturedetect.h"
 #include "pose-estimation.h"
 #include "facefeaturetrack.h"
+
+#include <iostream>
+#include <stdio.h>
+#include <X11/extensions/Xrandr.h> //to get screen resolution
+
+#include <opencv2/highgui.hpp>
 
 bool flag=0;
 

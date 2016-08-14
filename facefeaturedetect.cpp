@@ -15,14 +15,13 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "facefeaturedetect.h"
+
 #include <iostream>
 #include <stdio.h>
 
-#include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc_c.h>
-#include <opencv2/objdetect/objdetect_c.h>
-
-#include "facefeaturedetect.h"
+#include <opencv2/objdetect.hpp>
 
 static CvHaarClassifierCascade* faceCascade = 0;		// Create a new Face Haar classifier
 static CvHaarClassifierCascade* noseCascade = 0;		// Create a new Nose Haar classifier

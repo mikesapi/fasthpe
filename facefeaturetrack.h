@@ -18,7 +18,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef FACE_FEATURE_TRACK_H
 #define FACE_FEATURE_TRACK_H
 
-//include templates structure
+#include <opencv2/core.hpp>
+
+typedef struct facefeatures Face;
+typedef struct facegeometry FaceGeom;
 
 void closeTemplateMatch();
 int initTracker(IplImage* frame, Face* F );
