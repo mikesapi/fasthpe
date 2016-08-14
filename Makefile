@@ -1,4 +1,4 @@
-DEBUG=1
+DEBUG=0
 CC=g++
 CFLAGS=-Wall -Wfatal-errors
 OPTS=-Ofast
