@@ -25,7 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <stdlib.h>
 #include <iostream>
 
-#include <opencv2/video.hpp>
+#include <opencv2/video/video.hpp>
 #include <opencv2/legacy/compat.hpp>
 
 //#include <qsound.h>

@@ -2,7 +2,7 @@
 
 #include <stdio.h>
 
-#include <opencv2/highgui.hpp>
+#include <opencv2/highgui/highgui.hpp>
 
 
 int frames;

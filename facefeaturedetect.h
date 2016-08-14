@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef FACE_FEATURE_DETECT_H
 #define FACE_FEATURE_DETECT_H
 
-#include <opencv2/core.hpp>
+#include <opencv2/core/core.hpp>
 
 struct facefeatures{
  //create CvPoint structures to hold the located feature coordinates
