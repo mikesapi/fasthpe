@@ -1,6 +1,6 @@
 /*
 Copyright (C) 2011 Michael Sapienza
-   
+
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
@@ -73,15 +73,14 @@ bool CheckForFace(Face* F){
 	);
 	}
 	else return 0;
-  
+
 }
 
 // Main Program
-//void main( int argc, char** argv )
 int main(int argc, char** argv)
 {
 	int i;
-	
+
 	if( !initAll(argc, argv) ) exitProgram(-1);
 	while(1){
 
@@ -92,11 +91,11 @@ int main(int argc, char** argv)
 			captureVideoFrame();//get frame from camera
 
 			double t = (double)cvGetTickCount();//start timer
-			
+
 			detect_features(DisplayFrame, FPtr);//detect face and facial features
 
 			t = (double)cvGetTickCount() - t;//end timer
-			
+
 			printf( "detection time = %gms\n", t/((double)cvGetTickFrequency()*1000.) );//display timem in ms
 
 			//printf( "Left Eye x=%d y=%d\n", F.LeftEye.x, F.LeftEye.y) ;
@@ -105,19 +104,19 @@ int main(int argc, char** argv)
 			//printf( "Mouth x=%d y=%d\n\n\n", F.Nose.x, F.Nose.y) ;
 
 			cvShowImage(DISPLAY_WINDOW, DisplayFrame );//show result
-			
+
 			cvReleaseImage( &DisplayFrame);
 			key = cvWaitKey( delay );
 			if(key == 1048689 || key == 1048603 || key == 'q' )  exitProgram(0);//if user presses Esc or q , exit program
 		}
-		
-		
+
+
 		isFace = CheckForFace(FPtr); // exit loop when a face is detected
-		
+
 		if(isFace)	break;
 	}
 
-	
+
 	//captureVideoFrame();//get frame from camera
 
 	// initialize tracking (NOTE:it may work with grayscale instead of colour)
@@ -159,13 +158,13 @@ int main(int argc, char** argv)
 		 	flag=1;
 		cvShowImage( DISPLAY_WINDOW, FrameCopy );//show result
 
-	
+
 		//writeVideo( FrameCopy );
-		
+
 		cvReleaseImage( &FrameCopy );
 		cvReleaseImage( &DisplayFrame);
 		key = cvWaitKey( delay );
-		
+
 		if(key == 1048689 || key == 1048603 || key == 'q')  exitProgram(0);//if user presses Esc or q , exit program
 		if(key == 1048690 || key == 'r') is_tracking = 0;//manual reinitialization press 'r'
 		if(is_tracking == 0)
@@ -173,7 +172,7 @@ int main(int argc, char** argv)
 	}
 
 	}
-	
+
 exitProgram(0);
 //return 0;
 }
@@ -181,45 +180,45 @@ exitProgram(0);
 
 int initAll(int argc, char** argv)
 {
-  
-  if (argc < 2){
-    if( !initCapture() ) return 0;
-	delay = 10;
-	// Startup message tells user how to begin and how to exit
-	printf( "\n*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n"
-		"*-*-*-*-Fasthpe (c) Michael Sapienza - UOM - 2009-*-*-*-*-*\n\n" 
-		"Begin -> look straight at the camera and press 'Enter'\n\n"
-		"Reinitialize -> press 'r'\n\n"
-		"Exit -> press the ESC key,\n\n\n"
-		"How to play: Hit the blue circles that\n" 
-		"appear on the screen with the green circle\n"
-		"that you can control with your head orientation\n\n\n"
-		"***WARNING***\n"
-		"--Prolonged use of this game may cause neck injuries--"
-		"\n*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
-	fgetc(stdin);
-    
+
+  if(argc < 2)
+  {
+    if(!initCapture())
+    {
+      char defaultVideoFile[20] = "videos/ssm9.mpg";
+      std::cerr << "Would not start capture from camera\n";
+      std::cerr << "Trying to capture from the following video file: '" << defaultVideoFile << "'\n";
+      delay=30;
+      if(!initVideoCapture(defaultVideoFile)) return 0;
+    }
+    else
+    {
+      delay = 10;
+      // Startup message tells user how to begin and how to exit
+      printf( "\n*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n"
+        "*-*-*-*-Fasthpe (c) Michael Sapienza - UOM - 2009-*-*-*-*-*\n\n"
+        "Begin -> look straight at the camera and press 'Enter'\n\n"
+        "Reinitialize -> press 'r'\n\n"
+        "Exit -> press the ESC key,\n\n\n"
+        "How to play: Hit the blue circles that\n"
+        "appear on the screen with the green circle\n"
+        "that you can control with your head orientation\n\n\n"
+        "***WARNING***\n"
+        "--Prolonged use of this game may cause neck injuries--"
+        "\n*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*\n");
+      fgetc(stdin);
+    }
   }else{
     delay=30;
-/*     int i;
-     printf("argc = %d\n", argc);
- 
-     for (i = 0; i<argc; i++){
-          printf("argv[%d] = %s\n", i, argv[i]);
-     } */   
-	if( !initVideoCapture(argv[1]) ) return 0;
+    if(!initVideoCapture(argv[1])) return 0;
   }
 
-
-	if( !initFaceDet(	
-						
+	if(!initFaceDet(
 	"haarcascades/haarcascade_frontalface_alt2.xml",
 	"haarcascades/Nariz_nuevo_20stages.xml",
 	//"haarcascades/haarcascade_eye_tree_eyeglasses.xml",
 	"haarcascades/haarcascade_eye.xml",
-	"haarcascades/mouth.xml"))
-	  
-	return 0;
+	"haarcascades/mouth.xml")) return 0;
 
 	//int width, height;
 	GetScreenSize( screen_w, screen_h);
@@ -239,7 +238,7 @@ void exitProgram(int code)
 	// Release resources allocated in this file
 	cvDestroyWindow( DISPLAY_WINDOW );
 	cvReleaseImage( &FrameCopy );
-	    
+
 
 	// Release resources allocated in other project files
 	closeCapture();
@@ -294,7 +293,7 @@ cvEqualizeHist(red,red_e);
 
 cvMerge(blue_e, green_e, red_e, NULL, frame);
 
-	
+
 cvReleaseImage( &blue );
 cvReleaseImage( &green );
 cvReleaseImage( &red );
@@ -322,8 +321,8 @@ int GetScreenSize(int& width, int& height)
 
   		width = xrrs[original_size_id].width;
   		height = xrrs[original_size_id].height;
- 
+
  		XCloseDisplay(dpy);
-		return 0;    //Return a value that can be used for error checking. 
-  
+		return 0;    //Return a value that can be used for error checking.
+
 }
